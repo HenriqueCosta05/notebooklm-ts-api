@@ -1,0 +1,56 @@
+{
+  "name": "notebooklm-ts",
+  "version": "1.0.0",
+  "description": "An unofficial API alternative for notebook-lm py for Node.js developers.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev -r 'dotenv/config' -r 'tsconfig-paths/register' src/infrastructure/express/server.ts",
+    "start": "NODE_ENV=production node -r 'dotenv/config' dist/infrastructure/express/server.js",
+    "build": "rm -R dist ; babel src --extensions \".ts,.js\" --out-dir dist --copy-files --no-copy-ignored",
+    "buildAndStart": "npm run build && NODE_ENV=production npm start",
+    "test": "jest --bail --runInBand --silent --setupFiles dotenv/config",
+    "test:lintStaged": "npm test -- --findRelatedTests",
+    "test:coverage": "npm test -- --coverage",
+    "test:watch": "npm test -- --watch",
+    "test:watchAll": "npm test -- --watchAll",
+    "test:watchUnit": "npm run test:watch -- --testMatch \"**/?*.spec.ts?(x)\"",
+    "test:watchIntegration": "npm run test:watch -- --testMatch \"**/?*.test.ts?(x)\"",
+    "lint:log": "eslint 'src/**/*.ts'",
+    "lint": "eslint 'src/**/*.ts' --fix --max-warnings 0",
+    "lint:ts": "tsc --noEmit",
+    "prePush": "npm run test:coverage && npm run lint && npm run lint:ts && npm run build",
+    "migrate:make": "knex --knexfile src/infrastructure/knex/knexfile.ts migrate:make -x ts",
+    "migrate:dev": "knex --knexfile ./src/infrastructure/knex/knexfile.ts migrate:latest --env development",
+    "migrate:prod": "knex --knexfile ./src/infrastructure/knex/knexfile.ts migrate:latest --env production",
+    "rollback:dev": "knex --knexfile ./src/infrastructure/knex/knexfile.ts migrate:rollback --env development",
+    "rollback:prod": "knex --knexfile ./src/infrastructure/knex/knexfile.ts migrate:rollback --env production",
+    "database:up": "docker-compose up -d",
+    "database:down": "docker-compose down",
+    "docker:dropAll": "docker stop $(docker ps -a -q) && docker system prune -f"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HenriqueCosta05/notebooklm-ts-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/HenriqueCosta05/notebooklm-ts-api/issues"
+  },
+  "homepage": "https://github.com/HenriqueCosta05/notebooklm-ts-api#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.3.5",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
