@@ -42,14 +42,19 @@ const MEDIA_ARTIFACT_TYPES = new Set([
   ArtifactTypeCode.SLIDE_DECK,
 ]);
 
-const TRUSTED_DOWNLOAD_DOMAINS = [".google.com", ".googleusercontent.com", ".googleapis.com"];
+const TRUSTED_DOWNLOAD_DOMAINS = [
+  ".google.com",
+  ".googleusercontent.com",
+  ".googleapis.com",
+];
 
 const isTrustedUrl = (rawUrl: string): boolean => {
   try {
     const parsed = new URL(rawUrl);
     if (parsed.protocol !== "https:") return false;
     return TRUSTED_DOWNLOAD_DOMAINS.some(
-      (d) => parsed.hostname === d.replace(/^\./, "") || parsed.hostname.endsWith(d)
+      (d) =>
+        parsed.hostname === d.replace(/^\./, "") || parsed.hostname.endsWith(d),
     );
   } catch {
     return false;
@@ -57,13 +62,15 @@ const isTrustedUrl = (rawUrl: string): boolean => {
 };
 
 const isValidMediaUrl = (value: unknown): value is string =>
-  typeof value === "string" && (value.startsWith("http://") || value.startsWith("https://"));
+  typeof value === "string" &&
+  (value.startsWith("http://") || value.startsWith("https://"));
 
 const mapArtifact = (raw: unknown[]): Artifact => {
   const id = typeof raw[0] === "string" ? raw[0] : String(raw[0] ?? "");
   const title = typeof raw[1] === "string" ? raw[1] : "";
   const artifactTypeCode: number = typeof raw[2] === "number" ? raw[2] : 0;
-  const status: ArtifactStatus = typeof raw[4] === "number" ? raw[4] : ArtifactStatus.PENDING;
+  const status: ArtifactStatus =
+    typeof raw[4] === "number" ? raw[4] : ArtifactStatus.PENDING;
 
   let createdAt: Date | null = null;
   if (Array.isArray(raw[15]) && typeof (raw[15] as unknown[])[0] === "number") {
@@ -125,7 +132,9 @@ const mapArtifactFromMindMap = (raw: unknown[]): Artifact | null => {
       typeof ((inner[2] as unknown[][])[2] as unknown[])[0] === "number"
     ) {
       try {
-        createdAt = new Date(((inner[2] as unknown[][])[2] as number[])[0] * 1000);
+        createdAt = new Date(
+          ((inner[2] as unknown[][])[2] as number[])[0] * 1000,
+        );
       } catch {
         createdAt = null;
       }
@@ -156,8 +165,10 @@ const parseGenerationResult = (result: unknown): GenerationStatus => {
     const artifactData = (result as unknown[][])[0];
     if (Array.isArray(artifactData) && artifactData.length > 0) {
       const taskId = typeof artifactData[0] === "string" ? artifactData[0] : "";
-      const statusCode = typeof artifactData[4] === "number" ? artifactData[4] : null;
-      const status = statusCode !== null ? artifactStatusToStr(statusCode) : "pending";
+      const statusCode =
+        typeof artifactData[4] === "number" ? artifactData[4] : null;
+      const status =
+        statusCode !== null ? artifactStatusToStr(statusCode) : "pending";
 
       if (taskId) {
         return buildGenerationStatus(taskId, status, null, null);
@@ -165,14 +176,19 @@ const parseGenerationResult = (result: unknown): GenerationStatus => {
     }
   }
 
-  return buildGenerationStatus("", "failed", "Generation failed - no artifact_id returned", null);
+  return buildGenerationStatus(
+    "",
+    "failed",
+    "Generation failed - no artifact_id returned",
+    null,
+  );
 };
 
 const buildGenerationStatus = (
   taskId: string,
   status: string,
   error: string | null,
-  errorCode: string | null
+  errorCode: string | null,
 ): GenerationStatus => ({
   taskId,
   status,
@@ -187,7 +203,8 @@ const buildGenerationStatus = (
     status === "failed" &&
     (errorCode === "USER_DISPLAYABLE_ERROR" ||
       (typeof error === "string" &&
-        (error.toLowerCase().includes("rate limit") || error.toLowerCase().includes("quota")))),
+        (error.toLowerCase().includes("rate limit") ||
+          error.toLowerCase().includes("quota")))),
 });
 
 const extractAppData = (htmlContent: string): Record<string, unknown> => {
@@ -235,7 +252,16 @@ const formatFlashcardsMarkdown = (title: string, cards: unknown[]): string => {
   const lines: string[] = [`# ${title}`, ""];
   for (let i = 0; i < cards.length; i++) {
     const card = cards[i] as Record<string, unknown>;
-    lines.push(`## Card ${i + 1}`, "", `**Q:** ${String(card["f"] ?? "")}`, "", `**A:** ${String(card["b"] ?? "")}`, "", "---", "");
+    lines.push(
+      `## Card ${i + 1}`,
+      "",
+      `**Q:** ${String(card["f"] ?? "")}`,
+      "",
+      `**A:** ${String(card["b"] ?? "")}`,
+      "",
+      "---",
+      "",
+    );
   }
   return lines.join("\n");
 };
@@ -249,12 +275,18 @@ const extractCellText = (cell: unknown): string => {
   return "";
 };
 
-const parseDataTable = (rawData: unknown[]): { headers: string[]; rows: string[][] } => {
+const parseDataTable = (
+  rawData: unknown[],
+): { headers: string[]; rows: string[][] } => {
   try {
-    const rowsArray = (rawData as unknown[][][][][])[0][0][0][0][4][2] as unknown[][];
+    const rowsArray = (
+      (rawData as unknown[][][][][])[0][0][0][0][4] as unknown[]
+    )[2] as unknown[][];
 
     if (!rowsArray || rowsArray.length === 0) {
-      throw new ArtifactParseError("data_table", { details: "Empty data table" });
+      throw new ArtifactParseError("data_table", {
+        details: "Empty data table",
+      });
     }
 
     const headers: string[] = [];
@@ -273,7 +305,9 @@ const parseDataTable = (rawData: unknown[]): { headers: string[]; rows: string[]
     }
 
     if (!headers.length) {
-      throw new ArtifactParseError("data_table", { details: "Failed to extract headers" });
+      throw new ArtifactParseError("data_table", {
+        details: "Failed to extract headers",
+      });
     }
 
     return { headers, rows };
@@ -289,10 +323,13 @@ const parseDataTable = (rawData: unknown[]): { headers: string[]; rows: string[]
 export class ArtifactsAPI {
   constructor(
     private readonly core: ClientCore,
-    private readonly notes: NotesAPI
+    private readonly notes: NotesAPI,
   ) {}
 
-  async list(notebookId: string, filterKind?: ArtifactKind): Promise<Artifact[]> {
+  async list(
+    notebookId: string,
+    filterKind?: ArtifactKind,
+  ): Promise<Artifact[]> {
     const artifacts: Artifact[] = [];
 
     const params = [
@@ -309,7 +346,7 @@ export class ArtifactsAPI {
     const artifactsData: unknown[][] =
       Array.isArray(result) && Array.isArray((result as unknown[][])[0])
         ? (result as unknown[][][])[0]
-        : (result as unknown[][]) ?? [];
+        : ((result as unknown[][]) ?? []);
 
     for (const artData of artifactsData) {
       if (Array.isArray(artData) && artData.length > 0) {
@@ -378,10 +415,16 @@ export class ArtifactsAPI {
       instructions?: string | null;
       audioFormat?: AudioFormat | null;
       audioLength?: AudioLength | null;
-    } = {}
+    } = {},
   ): Promise<GenerationStatus> {
-    const { language = "en", instructions = null, audioFormat = null, audioLength = null } = options;
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const {
+      language = "en",
+      instructions = null,
+      audioFormat = null,
+      audioLength = null,
+    } = options;
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
 
     const sourceIdsTriple = sourceIds.map((sid) => [[[sid]]]);
     const sourceIdsDouble = sourceIds.map((sid) => [[sid]]);
@@ -390,10 +433,12 @@ export class ArtifactsAPI {
       [2],
       notebookId,
       [
-        null, null,
+        null,
+        null,
         ArtifactTypeCode.AUDIO,
         sourceIdsTriple,
-        null, null,
+        null,
+        null,
         [
           null,
           [
@@ -420,10 +465,16 @@ export class ArtifactsAPI {
       instructions?: string | null;
       videoFormat?: VideoFormat | null;
       videoStyle?: VideoStyle | null;
-    } = {}
+    } = {},
   ): Promise<GenerationStatus> {
-    const { language = "en", instructions = null, videoFormat = null, videoStyle = null } = options;
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const {
+      language = "en",
+      instructions = null,
+      videoFormat = null,
+      videoStyle = null,
+    } = options;
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
 
     const sourceIdsTriple = sourceIds.map((sid) => [[[sid]]]);
     const sourceIdsDouble = sourceIds.map((sid) => [[sid]]);
@@ -432,12 +483,17 @@ export class ArtifactsAPI {
       [2],
       notebookId,
       [
-        null, null,
+        null,
+        null,
         ArtifactTypeCode.VIDEO,
         sourceIdsTriple,
-        null, null, null, null,
+        null,
+        null,
+        null,
+        null,
         [
-          null, null,
+          null,
+          null,
           [
             sourceIdsDouble,
             language,
@@ -461,7 +517,7 @@ export class ArtifactsAPI {
       language?: string;
       customPrompt?: string | null;
       extraInstructions?: string | null;
-    } = {}
+    } = {},
   ): Promise<GenerationStatus> {
     const {
       reportFormat = ReportFormat.BRIEFING_DOC,
@@ -469,9 +525,13 @@ export class ArtifactsAPI {
       customPrompt = null,
       extraInstructions = null,
     } = options;
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
 
-    const formatConfigs: Record<ReportFormat, { title: string; description: string; prompt: string }> = {
+    const formatConfigs: Record<
+      ReportFormat,
+      { title: string; description: string; prompt: string }
+    > = {
       [ReportFormat.BRIEFING_DOC]: {
         title: "Briefing Doc",
         description: "Key insights and important quotes",
@@ -493,7 +553,8 @@ export class ArtifactsAPI {
       [ReportFormat.CUSTOM]: {
         title: "Custom Report",
         description: "Custom format",
-        prompt: customPrompt ?? "Create a report based on the provided sources.",
+        prompt:
+          customPrompt ?? "Create a report based on the provided sources.",
       },
     };
 
@@ -509,10 +570,13 @@ export class ArtifactsAPI {
       [2],
       notebookId,
       [
-        null, null,
+        null,
+        null,
         ArtifactTypeCode.REPORT,
         sourceIdsTriple,
-        null, null, null,
+        null,
+        null,
+        null,
         [
           null,
           [
@@ -534,7 +598,11 @@ export class ArtifactsAPI {
 
   async generateStudyGuide(
     notebookId: string,
-    options: { sourceIds?: string[]; language?: string; extraInstructions?: string | null } = {}
+    options: {
+      sourceIds?: string[];
+      language?: string;
+      extraInstructions?: string | null;
+    } = {},
   ): Promise<GenerationStatus> {
     return this.generateReport(notebookId, {
       reportFormat: ReportFormat.STUDY_GUIDE,
@@ -549,23 +617,38 @@ export class ArtifactsAPI {
       instructions?: string | null;
       quantity?: QuizQuantity | null;
       difficulty?: QuizDifficulty | null;
-    } = {}
+    } = {},
   ): Promise<GenerationStatus> {
     const { instructions = null, quantity = null, difficulty = null } = options;
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
     const sourceIdsTriple = sourceIds.map((sid) => [[[sid]]]);
 
     const params = [
       [2],
       notebookId,
       [
-        null, null,
+        null,
+        null,
         ArtifactTypeCode.QUIZ,
         sourceIdsTriple,
-        null, null, null, null, null,
+        null,
+        null,
+        null,
+        null,
+        null,
         [
           null,
-          [2, null, instructions, null, null, null, null, [quantity ?? null, difficulty ?? null]],
+          [
+            2,
+            null,
+            instructions,
+            null,
+            null,
+            null,
+            null,
+            [quantity ?? null, difficulty ?? null],
+          ],
         ],
       ],
     ];
@@ -580,23 +663,37 @@ export class ArtifactsAPI {
       instructions?: string | null;
       quantity?: QuizQuantity | null;
       difficulty?: QuizDifficulty | null;
-    } = {}
+    } = {},
   ): Promise<GenerationStatus> {
     const { instructions = null, quantity = null, difficulty = null } = options;
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
     const sourceIdsTriple = sourceIds.map((sid) => [[[sid]]]);
 
     const params = [
       [2],
       notebookId,
       [
-        null, null,
+        null,
+        null,
         ArtifactTypeCode.QUIZ,
         sourceIdsTriple,
-        null, null, null, null, null,
+        null,
+        null,
+        null,
+        null,
+        null,
         [
           null,
-          [1, null, instructions, null, null, null, [difficulty ?? null, quantity ?? null]],
+          [
+            1,
+            null,
+            instructions,
+            null,
+            null,
+            null,
+            [difficulty ?? null, quantity ?? null],
+          ],
         ],
       ],
     ];
@@ -612,21 +709,45 @@ export class ArtifactsAPI {
       instructions?: string | null;
       orientation?: InfographicOrientation | null;
       detailLevel?: InfographicDetail | null;
-    } = {}
+    } = {},
   ): Promise<GenerationStatus> {
-    const { language = "en", instructions = null, orientation = null, detailLevel = null } = options;
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const {
+      language = "en",
+      instructions = null,
+      orientation = null,
+      detailLevel = null,
+    } = options;
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
     const sourceIdsTriple = sourceIds.map((sid) => [[[sid]]]);
 
     const params = [
       [2],
       notebookId,
       [
-        null, null,
+        null,
+        null,
         ArtifactTypeCode.INFOGRAPHIC,
         sourceIdsTriple,
-        null, null, null, null, null, null, null, null, null, null,
-        [[instructions, language, null, orientation ?? null, detailLevel ?? null]],
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        [
+          [
+            instructions,
+            language,
+            null,
+            orientation ?? null,
+            detailLevel ?? null,
+          ],
+        ],
       ],
     ];
 
@@ -641,20 +762,38 @@ export class ArtifactsAPI {
       instructions?: string | null;
       slideFormat?: SlideDeckFormat | null;
       slideLength?: SlideDeckLength | null;
-    } = {}
+    } = {},
   ): Promise<GenerationStatus> {
-    const { language = "en", instructions = null, slideFormat = null, slideLength = null } = options;
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const {
+      language = "en",
+      instructions = null,
+      slideFormat = null,
+      slideLength = null,
+    } = options;
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
     const sourceIdsTriple = sourceIds.map((sid) => [[[sid]]]);
 
     const params = [
       [2],
       notebookId,
       [
-        null, null,
+        null,
+        null,
         ArtifactTypeCode.SLIDE_DECK,
         sourceIdsTriple,
-        null, null, null, null, null, null, null, null, null, null, null, null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         [[instructions, language, slideFormat ?? null, slideLength ?? null]],
       ],
     ];
@@ -668,20 +807,35 @@ export class ArtifactsAPI {
       sourceIds?: string[];
       language?: string;
       instructions?: string | null;
-    } = {}
+    } = {},
   ): Promise<GenerationStatus> {
     const { language = "en", instructions = null } = options;
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
     const sourceIdsTriple = sourceIds.map((sid) => [[[sid]]]);
 
     const params = [
       [2],
       notebookId,
       [
-        null, null,
+        null,
+        null,
         ArtifactTypeCode.DATA_TABLE,
         sourceIdsTriple,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         [null, [instructions, language]],
       ],
     ];
@@ -691,23 +845,31 @@ export class ArtifactsAPI {
 
   async generateMindMap(
     notebookId: string,
-    options: { sourceIds?: string[] } = {}
+    options: { sourceIds?: string[] } = {},
   ): Promise<{ mindMap: unknown; noteId: string | null }> {
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
     const sourceIdsNested = sourceIds.map((sid) => [[[sid]]]);
 
     const params = [
       sourceIdsNested,
-      null, null, null, null,
+      null,
+      null,
+      null,
+      null,
       ["interactive_mindmap", [["[CONTEXT]", ""]], ""],
       null,
       [2, null, [1]],
     ];
 
-    const result = await this.core.rpcCall(RPCMethod.GENERATE_MIND_MAP, params, {
-      sourcePath: `/notebook/${notebookId}`,
-      allowNull: true,
-    });
+    const result = await this.core.rpcCall(
+      RPCMethod.GENERATE_MIND_MAP,
+      params,
+      {
+        sourcePath: `/notebook/${notebookId}`,
+        allowNull: true,
+      },
+    );
 
     if (Array.isArray(result) && (result as unknown[]).length > 0) {
       const inner = (result as unknown[][])[0];
@@ -735,7 +897,10 @@ export class ArtifactsAPI {
             ? String((mindMapData as Record<string, unknown>)["name"])
             : "Mind Map";
 
-        const note = await this.notes.create(notebookId, { title, content: mindMapStr });
+        const note = await this.notes.create(notebookId, {
+          title,
+          content: mindMapStr,
+        });
 
         return { mindMap: mindMapData, noteId: note.id || null };
       }
@@ -748,7 +913,7 @@ export class ArtifactsAPI {
     notebookId: string,
     artifactId: string,
     slideIndex: number,
-    prompt: string
+    prompt: string,
   ): Promise<GenerationStatus> {
     if (slideIndex < 0) {
       throw new ValidationError(`slideIndex must be >= 0, got ${slideIndex}`);
@@ -768,23 +933,33 @@ export class ArtifactsAPI {
         "rpcCode" in error &&
         (error as { rpcCode: unknown }).rpcCode === "USER_DISPLAYABLE_ERROR"
       ) {
-        return buildGenerationStatus("", "failed", error.message, "USER_DISPLAYABLE_ERROR");
+        return buildGenerationStatus(
+          "",
+          "failed",
+          error.message,
+          "USER_DISPLAYABLE_ERROR",
+        );
       }
       throw error;
     }
   }
 
-  async pollStatus(notebookId: string, taskId: string): Promise<GenerationStatus> {
+  async pollStatus(
+    notebookId: string,
+    taskId: string,
+  ): Promise<GenerationStatus> {
     const artifactsData = await this.listRaw(notebookId);
 
     for (const art of artifactsData) {
-      if (!Array.isArray(art) || art.length === 0 || art[0] !== taskId) continue;
+      if (!Array.isArray(art) || art.length === 0 || art[0] !== taskId)
+        continue;
 
       const statusCode: number = typeof art[4] === "number" ? art[4] : 0;
       const artifactType: number = typeof art[2] === "number" ? art[2] : 0;
 
       const effectiveStatus =
-        statusCode === ArtifactStatus.COMPLETED && !this.isMediaReady(art, artifactType)
+        statusCode === ArtifactStatus.COMPLETED &&
+        !this.isMediaReady(art, artifactType)
           ? ArtifactStatus.PROCESSING
           : statusCode;
 
@@ -802,7 +977,7 @@ export class ArtifactsAPI {
       initialIntervalMs?: number;
       maxIntervalMs?: number;
       timeoutMs?: number;
-    } = {}
+    } = {},
   ): Promise<GenerationStatus> {
     const {
       initialIntervalMs = 2_000,
@@ -833,7 +1008,7 @@ export class ArtifactsAPI {
   async downloadAudio(
     notebookId: string,
     outputPath: string,
-    artifactId?: string
+    artifactId?: string,
   ): Promise<string> {
     const artifactsData = await this.listRaw(notebookId);
 
@@ -842,7 +1017,7 @@ export class ArtifactsAPI {
         Array.isArray(a) &&
         a.length > 4 &&
         a[2] === ArtifactTypeCode.AUDIO &&
-        a[4] === ArtifactStatus.COMPLETED
+        a[4] === ArtifactStatus.COMPLETED,
     );
 
     const art = artifactId
@@ -850,18 +1025,25 @@ export class ArtifactsAPI {
       : candidates[0];
 
     if (!art) {
-      throw new ArtifactNotReadyError("audio", artifactId ? { artifactId } : {});
+      throw new ArtifactNotReadyError(
+        "audio",
+        artifactId ? { artifactId } : {},
+      );
     }
 
     try {
       const metadata = art[6] as unknown[];
       if (!Array.isArray(metadata) || metadata.length <= 5) {
-        throw new ArtifactParseError("audio", { details: "Invalid audio metadata structure" });
+        throw new ArtifactParseError("audio", {
+          details: "Invalid audio metadata structure",
+        });
       }
 
       const mediaList = metadata[5] as unknown[];
       if (!Array.isArray(mediaList) || mediaList.length === 0) {
-        throw new ArtifactParseError("audio", { details: "No media URLs found" });
+        throw new ArtifactParseError("audio", {
+          details: "No media URLs found",
+        });
       }
 
       let url: string | null = null;
@@ -873,18 +1055,25 @@ export class ArtifactsAPI {
       }
 
       if (!url && Array.isArray(mediaList[0])) {
-        url = typeof (mediaList[0] as unknown[])[0] === "string"
-          ? (mediaList[0] as string[])[0]
-          : null;
+        url =
+          typeof (mediaList[0] as unknown[])[0] === "string"
+            ? (mediaList[0] as string[])[0]
+            : null;
       }
 
       if (!url) {
-        throw new ArtifactDownloadError("audio", { details: "Could not extract download URL" });
+        throw new ArtifactDownloadError("audio", {
+          details: "Could not extract download URL",
+        });
       }
 
       return this.downloadUrl(url, outputPath);
     } catch (error) {
-      if (error instanceof ArtifactParseError || error instanceof ArtifactDownloadError) throw error;
+      if (
+        error instanceof ArtifactParseError ||
+        error instanceof ArtifactDownloadError
+      )
+        throw error;
       throw new ArtifactParseError("audio", {
         details: `Failed to parse audio artifact: ${String(error)}`,
         cause: error as Error,
@@ -895,7 +1084,7 @@ export class ArtifactsAPI {
   async downloadVideo(
     notebookId: string,
     outputPath: string,
-    artifactId?: string
+    artifactId?: string,
   ): Promise<string> {
     const artifactsData = await this.listRaw(notebookId);
 
@@ -904,7 +1093,7 @@ export class ArtifactsAPI {
         Array.isArray(a) &&
         a.length > 4 &&
         a[2] === ArtifactTypeCode.VIDEO &&
-        a[4] === ArtifactStatus.COMPLETED
+        a[4] === ArtifactStatus.COMPLETED,
     );
 
     const art = artifactId
@@ -912,7 +1101,10 @@ export class ArtifactsAPI {
       : candidates[0];
 
     if (!art) {
-      throw new ArtifactNotReadyError("video", artifactId ? { artifactId } : {});
+      throw new ArtifactNotReadyError(
+        "video",
+        artifactId ? { artifactId } : {},
+      );
     }
 
     try {
@@ -922,7 +1114,9 @@ export class ArtifactsAPI {
 
       const metadata = art[8] as unknown[];
       if (!Array.isArray(metadata)) {
-        throw new ArtifactParseError("video_metadata", { details: "Invalid structure" });
+        throw new ArtifactParseError("video_metadata", {
+          details: "Invalid structure",
+        });
       }
 
       let mediaList: unknown[] | null = null;
@@ -933,7 +1127,7 @@ export class ArtifactsAPI {
           Array.isArray(item[0]) &&
           (item[0] as unknown[]).length > 0 &&
           typeof (item[0] as unknown[])[0] === "string" &&
-          ((item[0] as string[])[0]).startsWith("http")
+          (item[0] as string[])[0].startsWith("http")
         ) {
           mediaList = item;
           break;
@@ -941,7 +1135,9 @@ export class ArtifactsAPI {
       }
 
       if (!mediaList) {
-        throw new ArtifactParseError("video", { details: "No media URLs found" });
+        throw new ArtifactParseError("video", {
+          details: "No media URLs found",
+        });
       }
 
       let url: string | null = null;
@@ -953,18 +1149,25 @@ export class ArtifactsAPI {
       }
 
       if (!url && mediaList.length > 0) {
-        url = typeof (mediaList[0] as unknown[])[0] === "string"
-          ? (mediaList[0] as string[])[0]
-          : null;
+        url =
+          typeof (mediaList[0] as unknown[])[0] === "string"
+            ? (mediaList[0] as string[])[0]
+            : null;
       }
 
       if (!url) {
-        throw new ArtifactDownloadError("video", { details: "Could not extract download URL" });
+        throw new ArtifactDownloadError("video", {
+          details: "Could not extract download URL",
+        });
       }
 
       return this.downloadUrl(url, outputPath);
     } catch (error) {
-      if (error instanceof ArtifactParseError || error instanceof ArtifactDownloadError) throw error;
+      if (
+        error instanceof ArtifactParseError ||
+        error instanceof ArtifactDownloadError
+      )
+        throw error;
       throw new ArtifactParseError("video", {
         details: `Failed to parse video artifact: ${String(error)}`,
         cause: error as Error,
@@ -975,7 +1178,7 @@ export class ArtifactsAPI {
   async downloadReport(
     notebookId: string,
     outputPath: string,
-    artifactId?: string
+    artifactId?: string,
   ): Promise<string> {
     const artifactsData = await this.listRaw(notebookId);
 
@@ -984,19 +1187,22 @@ export class ArtifactsAPI {
         Array.isArray(a) &&
         a.length > 7 &&
         a[2] === ArtifactTypeCode.REPORT &&
-        a[4] === ArtifactStatus.COMPLETED
+        a[4] === ArtifactStatus.COMPLETED,
     );
 
     const art = this.selectArtifact(candidates, artifactId, "report");
 
     try {
       const contentWrapper = art[7] as unknown;
-      const markdownContent = Array.isArray(contentWrapper) && contentWrapper.length > 0
-        ? contentWrapper[0]
-        : contentWrapper;
+      const markdownContent =
+        Array.isArray(contentWrapper) && contentWrapper.length > 0
+          ? contentWrapper[0]
+          : contentWrapper;
 
       if (typeof markdownContent !== "string") {
-        throw new ArtifactParseError("report", { details: "Invalid structure" });
+        throw new ArtifactParseError("report", {
+          details: "Invalid structure",
+        });
       }
 
       const output = path.resolve(outputPath);
@@ -1015,28 +1221,46 @@ export class ArtifactsAPI {
   async downloadQuiz(
     notebookId: string,
     outputPath: string,
-    options: { artifactId?: string; outputFormat?: "json" | "markdown" | "html" } = {}
+    options: {
+      artifactId?: string;
+      outputFormat?: "json" | "markdown" | "html";
+    } = {},
   ): Promise<string> {
-    return this.downloadInteractiveArtifact(notebookId, outputPath, "quiz", options);
+    return this.downloadInteractiveArtifact(
+      notebookId,
+      outputPath,
+      "quiz",
+      options,
+    );
   }
 
   async downloadFlashcards(
     notebookId: string,
     outputPath: string,
-    options: { artifactId?: string; outputFormat?: "json" | "markdown" | "html" } = {}
+    options: {
+      artifactId?: string;
+      outputFormat?: "json" | "markdown" | "html";
+    } = {},
   ): Promise<string> {
-    return this.downloadInteractiveArtifact(notebookId, outputPath, "flashcards", options);
+    return this.downloadInteractiveArtifact(
+      notebookId,
+      outputPath,
+      "flashcards",
+      options,
+    );
   }
 
   async downloadSlideDeck(
     notebookId: string,
     outputPath: string,
-    options: { artifactId?: string; outputFormat?: "pdf" | "pptx" } = {}
+    options: { artifactId?: string; outputFormat?: "pdf" | "pptx" } = {},
   ): Promise<string> {
     const { artifactId, outputFormat = "pdf" } = options;
 
     if (outputFormat !== "pdf" && outputFormat !== "pptx") {
-      throw new ValidationError(`Invalid format '${outputFormat}'. Must be 'pdf' or 'pptx'.`);
+      throw new ValidationError(
+        `Invalid format '${outputFormat}'. Must be 'pdf' or 'pptx'.`,
+      );
     }
 
     const artifactsData = await this.listRaw(notebookId);
@@ -1045,24 +1269,33 @@ export class ArtifactsAPI {
         Array.isArray(a) &&
         a.length > 4 &&
         a[2] === ArtifactTypeCode.SLIDE_DECK &&
-        a[4] === ArtifactStatus.COMPLETED
+        a[4] === ArtifactStatus.COMPLETED,
     );
 
     const art = this.selectArtifact(candidates, artifactId, "slide_deck");
 
     try {
       if (art.length <= 16) {
-        throw new ArtifactParseError("slide_deck", { details: "Invalid structure" });
+        throw new ArtifactParseError("slide_deck", {
+          details: "Invalid structure",
+        });
       }
 
       const metadata = art[16] as unknown[];
       if (!Array.isArray(metadata)) {
-        throw new ArtifactParseError("slide_deck_metadata", { details: "Invalid structure" });
+        throw new ArtifactParseError("slide_deck_metadata", {
+          details: "Invalid structure",
+        });
       }
 
-      const url = outputFormat === "pptx"
-        ? (metadata.length >= 5 ? metadata[4] : null)
-        : (metadata.length >= 4 ? metadata[3] : null);
+      const url =
+        outputFormat === "pptx"
+          ? metadata.length >= 5
+            ? metadata[4]
+            : null
+          : metadata.length >= 4
+            ? metadata[3]
+            : null;
 
       if (typeof url !== "string" || !url.startsWith("http")) {
         throw new ArtifactDownloadError("slide_deck", {
@@ -1072,7 +1305,11 @@ export class ArtifactsAPI {
 
       return this.downloadUrl(url, outputPath);
     } catch (error) {
-      if (error instanceof ArtifactParseError || error instanceof ArtifactDownloadError) throw error;
+      if (
+        error instanceof ArtifactParseError ||
+        error instanceof ArtifactDownloadError
+      )
+        throw error;
       throw new ArtifactParseError("slide_deck", {
         details: `Failed to parse structure: ${String(error)}`,
         cause: error as Error,
@@ -1083,7 +1320,7 @@ export class ArtifactsAPI {
   async downloadInfographic(
     notebookId: string,
     outputPath: string,
-    artifactId?: string
+    artifactId?: string,
   ): Promise<string> {
     const artifactsData = await this.listRaw(notebookId);
     const candidates = artifactsData.filter(
@@ -1091,7 +1328,7 @@ export class ArtifactsAPI {
         Array.isArray(a) &&
         a.length > 4 &&
         a[2] === ArtifactTypeCode.INFOGRAPHIC &&
-        a[4] === ArtifactStatus.COMPLETED
+        a[4] === ArtifactStatus.COMPLETED,
     );
 
     const art = artifactId
@@ -1099,12 +1336,17 @@ export class ArtifactsAPI {
       : candidates[0];
 
     if (!art) {
-      throw new ArtifactNotReadyError("infographic", artifactId ? { artifactId } : {});
+      throw new ArtifactNotReadyError(
+        "infographic",
+        artifactId ? { artifactId } : {},
+      );
     }
 
     const url = this.findInfographicUrl(art);
     if (!url) {
-      throw new ArtifactDownloadError("infographic", { details: "Could not find image URL" });
+      throw new ArtifactDownloadError("infographic", {
+        details: "Could not find image URL",
+      });
     }
 
     return this.downloadUrl(url, outputPath);
@@ -1113,7 +1355,7 @@ export class ArtifactsAPI {
   async downloadMindMap(
     notebookId: string,
     outputPath: string,
-    artifactId?: string
+    artifactId?: string,
   ): Promise<string> {
     const mindMaps = await this.notes.listMindMaps(notebookId);
 
@@ -1126,13 +1368,17 @@ export class ArtifactsAPI {
       : mindMaps[0];
 
     if (!mindMap) {
-      throw new ArtifactNotFoundError(artifactId!, { artifactType: "mind_map" });
+      throw new ArtifactNotFoundError(artifactId!, {
+        artifactType: "mind_map",
+      });
     }
 
     try {
       const jsonString = (mindMap[1] as unknown[])[1];
       if (typeof jsonString !== "string") {
-        throw new ArtifactParseError("mind_map", { details: "Invalid structure" });
+        throw new ArtifactParseError("mind_map", {
+          details: "Invalid structure",
+        });
       }
 
       const jsonData = JSON.parse(jsonString) as unknown;
@@ -1152,7 +1398,7 @@ export class ArtifactsAPI {
   async downloadDataTable(
     notebookId: string,
     outputPath: string,
-    artifactId?: string
+    artifactId?: string,
   ): Promise<string> {
     const artifactsData = await this.listRaw(notebookId);
     const candidates = artifactsData.filter(
@@ -1160,7 +1406,7 @@ export class ArtifactsAPI {
         Array.isArray(a) &&
         a.length > 18 &&
         a[2] === ArtifactTypeCode.DATA_TABLE &&
-        a[4] === ArtifactStatus.COMPLETED
+        a[4] === ArtifactStatus.COMPLETED,
     );
 
     const art = this.selectArtifact(candidates, artifactId, "data_table");
@@ -1172,7 +1418,7 @@ export class ArtifactsAPI {
       const csvLines = [
         headers.map((h) => `"${h.replace(/"/g, '""')}"`).join(","),
         ...rows.map((row) =>
-          row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(",")
+          row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(","),
         ),
       ];
 
@@ -1198,7 +1444,11 @@ export class ArtifactsAPI {
     return true;
   }
 
-  async rename(notebookId: string, artifactId: string, newTitle: string): Promise<void> {
+  async rename(
+    notebookId: string,
+    artifactId: string,
+    newTitle: string,
+  ): Promise<void> {
     const params = [[artifactId, newTitle], [["title"]]];
     await this.core.rpcCall(RPCMethod.RENAME_ARTIFACT, params, {
       sourcePath: `/notebook/${notebookId}`,
@@ -1210,7 +1460,7 @@ export class ArtifactsAPI {
     notebookId: string,
     artifactId: string,
     title = "Export",
-    exportType: ExportType = ExportType.DOCS
+    exportType: ExportType = ExportType.DOCS,
   ): Promise<unknown> {
     const params = [null, artifactId, null, title, Number(exportType)];
     return this.core.rpcCall(RPCMethod.EXPORT_ARTIFACT, params, {
@@ -1221,10 +1471,14 @@ export class ArtifactsAPI {
 
   async suggestReports(notebookId: string): Promise<ReportSuggestion[]> {
     const params = [[2], notebookId];
-    const result = await this.core.rpcCall(RPCMethod.GET_SUGGESTED_REPORTS, params, {
-      sourcePath: `/notebook/${notebookId}`,
-      allowNull: true,
-    });
+    const result = await this.core.rpcCall(
+      RPCMethod.GET_SUGGESTED_REPORTS,
+      params,
+      {
+        sourcePath: `/notebook/${notebookId}`,
+        allowNull: true,
+      },
+    );
 
     if (!Array.isArray(result)) return [];
 
@@ -1233,7 +1487,9 @@ export class ArtifactsAPI {
       : (result as unknown[][]);
 
     return items
-      .filter((item): item is unknown[] => Array.isArray(item) && item.length >= 5)
+      .filter(
+        (item): item is unknown[] => Array.isArray(item) && item.length >= 5,
+      )
       .map((item) => ({
         title: typeof item[0] === "string" ? item[0] : "",
         description: typeof item[1] === "string" ? item[1] : "",
@@ -1242,12 +1498,19 @@ export class ArtifactsAPI {
       }));
   }
 
-  private async callGenerate(notebookId: string, params: unknown[]): Promise<GenerationStatus> {
+  private async callGenerate(
+    notebookId: string,
+    params: unknown[],
+  ): Promise<GenerationStatus> {
     try {
-      const result = await this.core.rpcCall(RPCMethod.CREATE_ARTIFACT, params, {
-        sourcePath: `/notebook/${notebookId}`,
-        allowNull: true,
-      });
+      const result = await this.core.rpcCall(
+        RPCMethod.CREATE_ARTIFACT,
+        params,
+        {
+          sourcePath: `/notebook/${notebookId}`,
+          allowNull: true,
+        },
+      );
       return parseGenerationResult(result);
     } catch (error) {
       if (
@@ -1255,7 +1518,12 @@ export class ArtifactsAPI {
         "rpcCode" in error &&
         (error as { rpcCode: unknown }).rpcCode === "USER_DISPLAYABLE_ERROR"
       ) {
-        return buildGenerationStatus("", "failed", error.message, "USER_DISPLAYABLE_ERROR");
+        return buildGenerationStatus(
+          "",
+          "failed",
+          error.message,
+          "USER_DISPLAYABLE_ERROR",
+        );
       }
       throw error;
     }
@@ -1281,7 +1549,7 @@ export class ArtifactsAPI {
   private selectArtifact(
     candidates: unknown[][],
     artifactId: string | undefined,
-    typeName: string
+    typeName: string,
   ): unknown[] {
     if (artifactId) {
       const found = candidates.find((a) => a[0] === artifactId);
@@ -1292,23 +1560,33 @@ export class ArtifactsAPI {
     if (candidates.length === 0) throw new ArtifactNotReadyError(typeName);
 
     return [...candidates].sort((a, b) => {
-      const tsA = Array.isArray(a[15]) && typeof (a[15] as number[])[0] === "number"
-        ? (a[15] as number[])[0]
-        : 0;
-      const tsB = Array.isArray(b[15]) && typeof (b[15] as number[])[0] === "number"
-        ? (b[15] as number[])[0]
-        : 0;
+      const tsA =
+        Array.isArray(a[15]) && typeof (a[15] as number[])[0] === "number"
+          ? (a[15] as number[])[0]
+          : 0;
+      const tsB =
+        Array.isArray(b[15]) && typeof (b[15] as number[])[0] === "number"
+          ? (b[15] as number[])[0]
+          : 0;
       return tsB - tsA;
     })[0];
   }
 
-  private async getArtifactContent(notebookId: string, artifactId: string): Promise<string | null> {
-    const result = await this.core.rpcCall(RPCMethod.GET_INTERACTIVE_HTML, [artifactId], {
-      sourcePath: `/notebook/${notebookId}`,
-      allowNull: true,
-    });
+  private async getArtifactContent(
+    notebookId: string,
+    artifactId: string,
+  ): Promise<string | null> {
+    const result = await this.core.rpcCall(
+      RPCMethod.GET_INTERACTIVE_HTML,
+      [artifactId],
+      {
+        sourcePath: `/notebook/${notebookId}`,
+        allowNull: true,
+      },
+    );
 
-    if (!Array.isArray(result) || (result as unknown[]).length === 0) return null;
+    if (!Array.isArray(result) || (result as unknown[]).length === 0)
+      return null;
 
     const data = (result as unknown[][])[0];
     if (
@@ -1328,14 +1606,17 @@ export class ArtifactsAPI {
     notebookId: string,
     outputPath: string,
     artifactType: "quiz" | "flashcards",
-    options: { artifactId?: string; outputFormat?: "json" | "markdown" | "html" }
+    options: {
+      artifactId?: string;
+      outputFormat?: "json" | "markdown" | "html";
+    },
   ): Promise<string> {
     const { artifactId, outputFormat = "json" } = options;
     const validFormats = ["json", "markdown", "html"];
 
     if (!validFormats.includes(outputFormat)) {
       throw new ValidationError(
-        `Invalid outputFormat: '${outputFormat}'. Use one of: ${validFormats.join(", ")}`
+        `Invalid outputFormat: '${outputFormat}'. Use one of: ${validFormats.join(", ")}`,
       );
     }
 
@@ -1355,12 +1636,17 @@ export class ArtifactsAPI {
     if (completed.length === 0) throw new ArtifactNotReadyError(artifactType);
 
     const artifact = artifactId
-      ? completed.find((a) => a.id === artifactId) ?? (() => { throw new ArtifactNotFoundError(artifactId, { artifactType }); })()
+      ? (completed.find((a) => a.id === artifactId) ??
+        (() => {
+          throw new ArtifactNotFoundError(artifactId, { artifactType });
+        })())
       : completed[0];
 
     const htmlContent = await this.getArtifactContent(notebookId, artifact.id);
     if (!htmlContent) {
-      throw new ArtifactDownloadError(artifactType, { details: "Failed to fetch content" });
+      throw new ArtifactDownloadError(artifactType, {
+        details: "Failed to fetch content",
+      });
     }
 
     let appData: Record<string, unknown>;
@@ -1373,8 +1659,15 @@ export class ArtifactsAPI {
       });
     }
 
-    const title = artifact.title || (isQuiz ? "Untitled Quiz" : "Untitled Flashcards");
-    const content = this.formatInteractiveContent(appData, title, outputFormat, htmlContent, isQuiz);
+    const title =
+      artifact.title || (isQuiz ? "Untitled Quiz" : "Untitled Flashcards");
+    const content = this.formatInteractiveContent(
+      appData,
+      title,
+      outputFormat,
+      htmlContent,
+      isQuiz,
+    );
 
     const output = path.resolve(outputPath);
     fs.mkdirSync(path.dirname(output), { recursive: true });
@@ -1387,7 +1680,7 @@ export class ArtifactsAPI {
     title: string,
     outputFormat: string,
     htmlContent: string,
-    isQuiz: boolean
+    isQuiz: boolean,
   ): string {
     if (outputFormat === "html") return htmlContent;
 
@@ -1399,7 +1692,8 @@ export class ArtifactsAPI {
     }
 
     const cards = (appData["flashcards"] as unknown[]) ?? [];
-    if (outputFormat === "markdown") return formatFlashcardsMarkdown(title, cards);
+    if (outputFormat === "markdown")
+      return formatFlashcardsMarkdown(title, cards);
 
     const normalized = (cards as Array<Record<string, unknown>>).map((c) => ({
       front: String(c["f"] ?? ""),
@@ -1450,7 +1744,8 @@ export class ArtifactsAPI {
       if (!Array.isArray(item) || item.length <= 2) continue;
 
       const content = item[2];
-      if (!Array.isArray(content) || (content as unknown[]).length === 0) continue;
+      if (!Array.isArray(content) || (content as unknown[]).length === 0)
+        continue;
 
       const firstContent = (content as unknown[][])[0];
       if (!Array.isArray(firstContent) || firstContent.length <= 1) continue;
@@ -1467,11 +1762,19 @@ export class ArtifactsAPI {
   private isMediaReady(art: unknown[], artifactType: number): boolean {
     try {
       if (artifactType === ArtifactTypeCode.AUDIO) {
-        if (art.length > 6 && Array.isArray(art[6]) && (art[6] as unknown[]).length > 5) {
+        if (
+          art.length > 6 &&
+          Array.isArray(art[6]) &&
+          (art[6] as unknown[]).length > 5
+        ) {
           const mediaList = (art[6] as unknown[][])[5];
           if (Array.isArray(mediaList) && mediaList.length > 0) {
             const first = (mediaList as unknown[][])[0];
-            return Array.isArray(first) && first.length > 0 && isValidMediaUrl(first[0]);
+            return (
+              Array.isArray(first) &&
+              first.length > 0 &&
+              isValidMediaUrl(first[0])
+            );
           }
         }
         return false;
@@ -1480,7 +1783,10 @@ export class ArtifactsAPI {
       if (artifactType === ArtifactTypeCode.VIDEO) {
         if (art.length > 8 && Array.isArray(art[8])) {
           return (art[8] as unknown[][]).some(
-            (item) => Array.isArray(item) && item.length > 0 && isValidMediaUrl(item[0])
+            (item) =>
+              Array.isArray(item) &&
+              item.length > 0 &&
+              isValidMediaUrl(item[0]),
           );
         }
         return false;

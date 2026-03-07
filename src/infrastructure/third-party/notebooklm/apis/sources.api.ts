@@ -40,7 +40,10 @@ const extractYoutubeVideoId = (url: string): string | null => {
 
     const pathPrefixes = ["shorts", "embed", "live", "v"];
     const segments = parsed.pathname.slice(1).split("/");
-    if (segments.length >= 2 && pathPrefixes.includes(segments[0].toLowerCase())) {
+    if (
+      segments.length >= 2 &&
+      pathPrefixes.includes(segments[0].toLowerCase())
+    ) {
       const id = segments[1];
       return id && isValidVideoId(id) ? id : null;
     }
@@ -53,9 +56,9 @@ const extractYoutubeVideoId = (url: string): string | null => {
 };
 
 const parseSourceFromRaw = (src: unknown[]): Source => {
-  const srcId =
+  const srcId: string =
     Array.isArray(src[0]) && typeof (src[0] as unknown[])[0] === "string"
-      ? (src[0] as unknown[])[0]
+      ? String((src[0] as unknown[])[0])
       : String(src[0] ?? "");
 
   const title = typeof src[1] === "string" ? src[1] : null;
@@ -163,7 +166,7 @@ export class SourcesAPI {
       initialIntervalMs?: number;
       maxIntervalMs?: number;
       backoffFactor?: number;
-    } = {}
+    } = {},
   ): Promise<Source> {
     const {
       timeoutMs = 120_000,
@@ -189,10 +192,12 @@ export class SourcesAPI {
       lastStatus = source.status;
 
       if (source.isReady) return source;
-      if (source.isError) throw new SourceProcessingError(sourceId, source.status);
+      if (source.isError)
+        throw new SourceProcessingError(sourceId, source.status);
 
       const remaining = timeoutMs - (Date.now() - start);
-      if (remaining <= 0) throw new SourceTimeoutError(sourceId, timeoutMs / 1000, lastStatus);
+      if (remaining <= 0)
+        throw new SourceTimeoutError(sourceId, timeoutMs / 1000, lastStatus);
 
       const sleepMs = Math.min(interval, remaining);
       await new Promise((resolve) => setTimeout(resolve, sleepMs));
@@ -203,17 +208,17 @@ export class SourcesAPI {
   async waitForSources(
     notebookId: string,
     sourceIds: string[],
-    options: Parameters<SourcesAPI["waitUntilReady"]>[2] = {}
+    options: Parameters<SourcesAPI["waitUntilReady"]>[2] = {},
   ): Promise<Source[]> {
     return Promise.all(
-      sourceIds.map((id) => this.waitUntilReady(notebookId, id, options))
+      sourceIds.map((id) => this.waitUntilReady(notebookId, id, options)),
     );
   }
 
   async addUrl(
     notebookId: string,
     url: string,
-    options: { wait?: boolean; waitTimeoutMs?: number } = {}
+    options: { wait?: boolean; waitTimeoutMs?: number } = {},
   ): Promise<Source> {
     const { wait = false, waitTimeoutMs = 120_000 } = options;
     const videoId = extractYoutubeVideoId(url);
@@ -228,7 +233,9 @@ export class SourcesAPI {
     }
 
     if (!result) {
-      throw new SourceAddError(url, { message: `API returned no data for URL: ${url}` });
+      throw new SourceAddError(url, {
+        message: `API returned no data for URL: ${url}`,
+      });
     }
 
     const source = this.parseSourceFromApiResponse(result as unknown[]);
@@ -242,7 +249,7 @@ export class SourcesAPI {
     notebookId: string,
     title: string,
     content: string,
-    options: { wait?: boolean; waitTimeoutMs?: number } = {}
+    options: { wait?: boolean; waitTimeoutMs?: number } = {},
   ): Promise<Source> {
     const { wait = false, waitTimeoutMs = 120_000 } = options;
 
@@ -267,7 +274,9 @@ export class SourcesAPI {
     }
 
     if (!result) {
-      throw new SourceAddError(title, { message: `API returned no data for text source: ${title}` });
+      throw new SourceAddError(title, {
+        message: `API returned no data for text source: ${title}`,
+      });
     }
 
     const source = this.parseSourceFromApiResponse(result as unknown[]);
@@ -280,7 +289,7 @@ export class SourcesAPI {
   async addFile(
     notebookId: string,
     filePath: string,
-    options: { wait?: boolean; waitTimeoutMs?: number } = {}
+    options: { wait?: boolean; waitTimeoutMs?: number } = {},
   ): Promise<Source> {
     const { wait = false, waitTimeoutMs = 120_000 } = options;
 
@@ -298,7 +307,12 @@ export class SourcesAPI {
     const fileSize = stat.size;
 
     const sourceId = await this.registerFileSource(notebookId, filename);
-    const uploadUrl = await this.startResumableUpload(notebookId, filename, fileSize, sourceId);
+    const uploadUrl = await this.startResumableUpload(
+      notebookId,
+      filename,
+      fileSize,
+      sourceId,
+    );
     await this.uploadFileStreaming(uploadUrl, resolvedPath);
 
     const source: Source = {
@@ -323,13 +337,22 @@ export class SourcesAPI {
     fileId: string,
     title: string,
     mimeType = "application/vnd.google-apps.document",
-    options: { wait?: boolean; waitTimeoutMs?: number } = {}
+    options: { wait?: boolean; waitTimeoutMs?: number } = {},
   ): Promise<Source> {
     const { wait = false, waitTimeoutMs = 120_000 } = options;
 
     const sourceData = [
       [fileId, mimeType, 1, title],
-      null, null, null, null, null, null, null, null, null, 1,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      1,
     ];
 
     const params = [
@@ -360,7 +383,11 @@ export class SourcesAPI {
     return true;
   }
 
-  async rename(notebookId: string, sourceId: string, newTitle: string): Promise<Source> {
+  async rename(
+    notebookId: string,
+    sourceId: string,
+    newTitle: string,
+  ): Promise<Source> {
     const params = [null, [sourceId], [[[newTitle]]]];
     const result = await this.core.rpcCall(RPCMethod.UPDATE_SOURCE, params, {
       sourcePath: `/notebook/${notebookId}`,
@@ -393,17 +420,22 @@ export class SourcesAPI {
 
   async checkFreshness(notebookId: string, sourceId: string): Promise<boolean> {
     const params = [null, [sourceId], [2]];
-    const result = await this.core.rpcCall(RPCMethod.CHECK_SOURCE_FRESHNESS, params, {
-      sourcePath: `/notebook/${notebookId}`,
-      allowNull: true,
-    });
+    const result = await this.core.rpcCall(
+      RPCMethod.CHECK_SOURCE_FRESHNESS,
+      params,
+      {
+        sourcePath: `/notebook/${notebookId}`,
+        allowNull: true,
+      },
+    );
 
     if (result === true) return true;
     if (result === false) return false;
     if (Array.isArray(result)) {
       if ((result as unknown[]).length === 0) return true;
       const first = (result as unknown[][])[0];
-      if (Array.isArray(first) && first.length > 1 && first[1] === true) return true;
+      if (Array.isArray(first) && first.length > 1 && first[1] === true)
+        return true;
     }
     return false;
   }
@@ -430,7 +462,11 @@ export class SourcesAPI {
           const keywordsArr = (inner as unknown[][])[2];
           if (Array.isArray(keywordsArr) && keywordsArr.length > 0) {
             const kw = keywordsArr[0];
-            keywords = Array.isArray(kw) ? (kw as unknown[]).filter((k): k is string => typeof k === "string") : [];
+            keywords = Array.isArray(kw)
+              ? (kw as unknown[]).filter(
+                  (k): k is string => typeof k === "string",
+                )
+              : [];
           }
         }
       }
@@ -439,7 +475,10 @@ export class SourcesAPI {
     return { summary, keywords };
   }
 
-  async getFulltext(notebookId: string, sourceId: string): Promise<SourceFulltext> {
+  async getFulltext(
+    notebookId: string,
+    sourceId: string,
+  ): Promise<SourceFulltext> {
     const params = [[sourceId], [2], [2]];
     const result = await this.core.rpcCall(RPCMethod.GET_SOURCE, params, {
       sourcePath: `/notebook/${notebookId}`,
@@ -507,7 +546,10 @@ export class SourcesAPI {
     return parseSourceFromRaw(data);
   }
 
-  private async addYoutubeSource(notebookId: string, url: string): Promise<unknown> {
+  private async addYoutubeSource(
+    notebookId: string,
+    url: string,
+  ): Promise<unknown> {
     const params = [
       [[null, null, null, null, null, null, null, [url], null, null, 1]],
       notebookId,
@@ -520,7 +562,10 @@ export class SourcesAPI {
     });
   }
 
-  private async addUrlSource(notebookId: string, url: string): Promise<unknown> {
+  private async addUrlSource(
+    notebookId: string,
+    url: string,
+  ): Promise<unknown> {
     const params = [
       [[null, null, [url], null, null, null, null, null]],
       notebookId,
@@ -533,7 +578,10 @@ export class SourcesAPI {
     });
   }
 
-  private async registerFileSource(notebookId: string, filename: string): Promise<string> {
+  private async registerFileSource(
+    notebookId: string,
+    filename: string,
+  ): Promise<string> {
     const params = [
       [[filename]],
       notebookId,
@@ -565,7 +613,7 @@ export class SourcesAPI {
     notebookId: string,
     filename: string,
     fileSize: number,
-    sourceId: string
+    sourceId: string,
   ): Promise<string> {
     const url = `${UPLOAD_URL}?authuser=0`;
 
@@ -607,7 +655,10 @@ export class SourcesAPI {
     return uploadUrl;
   }
 
-  private async uploadFileStreaming(uploadUrl: string, filePath: string): Promise<void> {
+  private async uploadFileStreaming(
+    uploadUrl: string,
+    filePath: string,
+  ): Promise<void> {
     const fileBuffer = fs.readFileSync(filePath);
 
     const response = await fetch(uploadUrl, {

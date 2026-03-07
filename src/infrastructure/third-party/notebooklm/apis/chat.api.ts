@@ -1,6 +1,11 @@
 import * as os from "os";
 import { ClientCore } from "../core";
-import { RPCMethod, QUERY_URL, ChatGoal, ChatResponseLength } from "../rpc/types";
+import {
+  RPCMethod,
+  QUERY_URL,
+  ChatGoal,
+  ChatResponseLength,
+} from "../rpc/types";
 import { ChatError, NetworkError, ValidationError } from "../rpc/errors";
 import {
   AskResult,
@@ -65,8 +70,12 @@ const collectTextsFromNested = (nested: unknown, texts: string[]): void => {
 };
 
 const extractTextPassages = (
-  citeInner: unknown[]
-): { citedText: string | null; startChar: number | null; endChar: number | null } => {
+  citeInner: unknown[],
+): {
+  citedText: string | null;
+  startChar: number | null;
+  endChar: number | null;
+} => {
   if (citeInner.length <= 4 || !Array.isArray(citeInner[4])) {
     return { citedText: null, startChar: null, endChar: null };
   }
@@ -76,11 +85,19 @@ const extractTextPassages = (
   let endChar: number | null = null;
 
   for (const passageWrapper of citeInner[4] as unknown[]) {
-    if (!Array.isArray(passageWrapper) || (passageWrapper as unknown[]).length === 0) continue;
+    if (
+      !Array.isArray(passageWrapper) ||
+      (passageWrapper as unknown[]).length === 0
+    )
+      continue;
     const passageData = (passageWrapper as unknown[])[0];
-    if (!Array.isArray(passageData) || (passageData as unknown[]).length < 3) continue;
+    if (!Array.isArray(passageData) || (passageData as unknown[]).length < 3)
+      continue;
 
-    if (startChar === null && typeof (passageData as unknown[])[0] === "number") {
+    if (
+      startChar === null &&
+      typeof (passageData as unknown[])[0] === "number"
+    ) {
       startChar = (passageData as unknown[])[0] as number;
     }
     if (typeof (passageData as unknown[])[1] === "number") {
@@ -103,7 +120,8 @@ const parseSingleCitation = (cite: unknown): ChatReference | null => {
   const citeInner = (cite as unknown[])[1];
   if (!Array.isArray(citeInner)) return null;
 
-  const sourceIdData = (citeInner as unknown[]).length > 5 ? (citeInner as unknown[])[5] : null;
+  const sourceIdData =
+    (citeInner as unknown[]).length > 5 ? (citeInner as unknown[])[5] : null;
   const sourceId = extractUuidFromNested(sourceIdData);
   if (!sourceId) return null;
 
@@ -114,7 +132,9 @@ const parseSingleCitation = (cite: unknown): ChatReference | null => {
     chunkId = typeof firstItem === "string" ? firstItem : null;
   }
 
-  const { citedText, startChar, endChar } = extractTextPassages(citeInner as unknown[]);
+  const { citedText, startChar, endChar } = extractTextPassages(
+    citeInner as unknown[],
+  );
 
   return {
     sourceId,
@@ -151,7 +171,7 @@ const raiseIfRateLimited = (errorPayload: unknown[]): void => {
           ((entry as unknown[])[0] as string).includes("UserDisplayableError")
         ) {
           throw new ChatError(
-            "Chat request was rate limited or rejected by the API. Wait a few seconds and try again."
+            "Chat request was rate limited or rejected by the API. Wait a few seconds and try again.",
           );
         }
       }
@@ -162,7 +182,7 @@ const raiseIfRateLimited = (errorPayload: unknown[]): void => {
 };
 
 const extractAnswerAndRefsFromChunk = (
-  jsonStr: string
+  jsonStr: string,
 ): {
   text: string | null;
   isAnswer: boolean;
@@ -197,7 +217,8 @@ const extractAnswerAndRefsFromChunk = (
 
     try {
       const innerData = JSON.parse(innerJson) as unknown;
-      if (!Array.isArray(innerData) || (innerData as unknown[]).length === 0) continue;
+      if (!Array.isArray(innerData) || (innerData as unknown[]).length === 0)
+        continue;
 
       const first = (innerData as unknown[][])[0];
       if (!Array.isArray(first) || first.length === 0) continue;
@@ -232,8 +253,12 @@ const extractAnswerAndRefsFromChunk = (
 };
 
 const parseAskResponse = (
-  responseText: string
-): { answer: string; references: ChatReference[]; serverConvId: string | null } => {
+  responseText: string,
+): {
+  answer: string;
+  references: ChatReference[];
+  serverConvId: string | null;
+} => {
   let text = responseText;
   if (text.startsWith(")]}'")) text = text.slice(4);
 
@@ -244,8 +269,12 @@ const parseAskResponse = (
   let serverConvId: string | null = null;
 
   const processChunk = (jsonStr: string): void => {
-    const { text: chunkText, isAnswer, refs, serverConvId: convId } =
-      extractAnswerAndRefsFromChunk(jsonStr);
+    const {
+      text: chunkText,
+      isAnswer,
+      refs,
+      serverConvId: convId,
+    } = extractAnswerAndRefsFromChunk(jsonStr);
 
     if (chunkText) {
       if (isAnswer && chunkText.length > bestMarkedAnswer.length) {
@@ -262,7 +291,10 @@ const parseAskResponse = (
   let i = 0;
   while (i < lines.length) {
     const line = lines[i].trim();
-    if (!line) { i++; continue; }
+    if (!line) {
+      i++;
+      continue;
+    }
 
     const maybeByteCount = Number(line);
     const isNumber = !isNaN(maybeByteCount) && Number.isInteger(maybeByteCount);
@@ -296,7 +328,10 @@ const parseTurnsToQAPairs = (turnsData: unknown): Array<[string, string]> => {
 
   while (i < (first as unknown[]).length) {
     const turn = (first as unknown[])[i];
-    if (!Array.isArray(turn) || (turn as unknown[]).length < 3) { i++; continue; }
+    if (!Array.isArray(turn) || (turn as unknown[]).length < 3) {
+      i++;
+      continue;
+    }
 
     if ((turn as unknown[])[2] === 1 && (turn as unknown[]).length > 3) {
       const q = String((turn as unknown[])[3] ?? "");
@@ -310,7 +345,7 @@ const parseTurnsToQAPairs = (turnsData: unknown): Array<[string, string]> => {
           (next as unknown[])[2] === 2
         ) {
           try {
-            a = String((next as unknown[][])[4][0][0] ?? "");
+            a = String(((next as unknown[][])[4] as unknown[][])[0][0] ?? "");
           } catch {
             a = "";
           }
@@ -329,12 +364,32 @@ const parseTurnsToQAPairs = (turnsData: unknown): Array<[string, string]> => {
 
 const CHAT_MODE_CONFIGS: Record<
   ChatMode,
-  { goal: ChatGoal; responseLength: ChatResponseLength; customPrompt: string | null }
+  {
+    goal: ChatGoal;
+    responseLength: ChatResponseLength;
+    customPrompt: string | null;
+  }
 > = {
-  default: { goal: ChatGoal.DEFAULT, responseLength: ChatResponseLength.DEFAULT, customPrompt: null },
-  learning_guide: { goal: ChatGoal.LEARNING_GUIDE, responseLength: ChatResponseLength.LONGER, customPrompt: null },
-  concise: { goal: ChatGoal.DEFAULT, responseLength: ChatResponseLength.SHORTER, customPrompt: null },
-  detailed: { goal: ChatGoal.DEFAULT, responseLength: ChatResponseLength.LONGER, customPrompt: null },
+  default: {
+    goal: ChatGoal.DEFAULT,
+    responseLength: ChatResponseLength.DEFAULT,
+    customPrompt: null,
+  },
+  learning_guide: {
+    goal: ChatGoal.LEARNING_GUIDE,
+    responseLength: ChatResponseLength.LONGER,
+    customPrompt: null,
+  },
+  concise: {
+    goal: ChatGoal.DEFAULT,
+    responseLength: ChatResponseLength.SHORTER,
+    customPrompt: null,
+  },
+  detailed: {
+    goal: ChatGoal.DEFAULT,
+    responseLength: ChatResponseLength.LONGER,
+    customPrompt: null,
+  },
 };
 
 export class ChatAPI {
@@ -346,10 +401,11 @@ export class ChatAPI {
     options: {
       sourceIds?: string[];
       conversationId?: string | null;
-    } = {}
+    } = {},
   ): Promise<AskResult> {
     const { conversationId: existingConvId = null } = options;
-    const sourceIds = options.sourceIds ?? (await this.core.getSourceIds(notebookId));
+    const sourceIds =
+      options.sourceIds ?? (await this.core.getSourceIds(notebookId));
 
     const isNewConversation = existingConvId === null;
     const conversationId = isNewConversation ? generateUuid() : existingConvId;
@@ -378,7 +434,9 @@ export class ChatAPI {
 
     const bodyParts = [`f.req=${encodedReq}`];
     if (this.core.authTokens.csrfToken) {
-      bodyParts.push(`at=${encodeURIComponent(this.core.authTokens.csrfToken)}`);
+      bodyParts.push(
+        `at=${encodeURIComponent(this.core.authTokens.csrfToken)}`,
+      );
     }
     const body = bodyParts.join("&") + "&";
 
@@ -413,7 +471,9 @@ export class ChatAPI {
     } catch (error) {
       clearTimeout(timer);
       if (error instanceof Error && error.name === "AbortError") {
-        throw new NetworkError("Chat request timed out", { originalError: error });
+        throw new NetworkError("Chat request timed out", {
+          originalError: error,
+        });
       }
       throw new NetworkError(`Chat request failed: ${String(error)}`, {
         originalError: error as Error,
@@ -434,7 +494,12 @@ export class ChatAPI {
 
     if (answer) {
       const turnNumber = cachedTurns.length + 1;
-      this.core.cacheConversationTurn(finalConvId, question, answer, turnNumber);
+      this.core.cacheConversationTurn(
+        finalConvId,
+        question,
+        answer,
+        turnNumber,
+      );
     }
 
     const turnNumber = this.core.getCachedConversation(finalConvId).length;
@@ -452,7 +517,7 @@ export class ChatAPI {
   async getConversationTurns(
     notebookId: string,
     conversationId: string,
-    limit = 2
+    limit = 2,
   ): Promise<unknown> {
     const params: unknown[] = [[], null, null, conversationId, limit];
     return this.core.rpcCall(RPCMethod.GET_CONVERSATION_TURNS, params, {
@@ -462,16 +527,24 @@ export class ChatAPI {
 
   async getConversationId(notebookId: string): Promise<string | null> {
     const params: unknown[] = [[], null, notebookId, 1];
-    const raw = await this.core.rpcCall(RPCMethod.GET_LAST_CONVERSATION_ID, params, {
-      sourcePath: `/notebook/${notebookId}`,
-    });
+    const raw = await this.core.rpcCall(
+      RPCMethod.GET_LAST_CONVERSATION_ID,
+      params,
+      {
+        sourcePath: `/notebook/${notebookId}`,
+      },
+    );
 
     if (!Array.isArray(raw)) return null;
 
     for (const group of raw as unknown[]) {
       if (!Array.isArray(group)) continue;
       for (const conv of group as unknown[]) {
-        if (Array.isArray(conv) && (conv as unknown[]).length > 0 && typeof (conv as unknown[])[0] === "string") {
+        if (
+          Array.isArray(conv) &&
+          (conv as unknown[]).length > 0 &&
+          typeof (conv as unknown[])[0] === "string"
+        ) {
           return (conv as string[])[0];
         }
       }
@@ -482,7 +555,7 @@ export class ChatAPI {
 
   async getHistory(
     notebookId: string,
-    options: { limit?: number; conversationId?: string | null } = {}
+    options: { limit?: number; conversationId?: string | null } = {},
   ): Promise<Array<[string, string]>> {
     const { limit = 100, conversationId: convIdOverride = null } = options;
 
@@ -501,7 +574,11 @@ export class ChatAPI {
       (turnsData as unknown[]).length > 0 &&
       Array.isArray((turnsData as unknown[][])[0])
     ) {
-      turnsData = [[(turnsData as unknown[][])[0]].map((arr) => (arr as unknown[]).slice().reverse()).flat()];
+      turnsData = [
+        [(turnsData as unknown[][])[0]]
+          .map((arr) => (arr as unknown[]).slice().reverse())
+          .flat(),
+      ];
     }
 
     return parseTurnsToQAPairs(turnsData);
@@ -525,7 +602,7 @@ export class ChatAPI {
       goal?: ChatGoal;
       responseLength?: ChatResponseLength;
       customPrompt?: string | null;
-    } = {}
+    } = {},
   ): Promise<void> {
     const {
       goal = ChatGoal.DEFAULT,
@@ -537,8 +614,7 @@ export class ChatAPI {
       throw new ValidationError("customPrompt is required when goal is CUSTOM");
     }
 
-    const goalArray =
-      goal === ChatGoal.CUSTOM ? [goal, customPrompt] : [goal];
+    const goalArray = goal === ChatGoal.CUSTOM ? [goal, customPrompt] : [goal];
 
     const chatSettings = [goalArray, [responseLength]];
     const params = [
