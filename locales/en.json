@@ -1,0 +1,96 @@
+{
+  "errors": {
+    "internal": "An internal server error occurred.",
+    "not_found": "The requested resource was not found.",
+    "bad_request": "The request is invalid. Please check your input.",
+    "unauthorized": "Authentication is required to access this resource.",
+    "forbidden": "You do not have permission to perform this action.",
+    "rate_limited": "Too many requests. Please wait before retrying.",
+    "validation": "Validation failed: {{message}}",
+    "auth_expired": "Authentication expired. Please re-authenticate.",
+    "auth_missing_cookies": "Missing required authentication cookies: {{cookies}}",
+    "auth_invalid_storage": "Invalid storage state. The 'cookies' key is required.",
+    "auth_empty_env": "NOTEBOOKLM_AUTH_JSON is set but empty.",
+    "storage_not_found": "Storage file not found: {{path}}. Run 'notebooklm login' to authenticate.",
+    "csrf_not_found": "CSRF token not found. Page structure may have changed.",
+    "session_not_found": "Session ID not found. Page structure may have changed.",
+    "rpc_no_result": "No result returned for RPC call.",
+    "rpc_null_result": "RPC returned a null result. This may be a server or parameter issue.",
+    "rpc_malformed": "Response parsing failed: {{count}} of {{total}} chunks were malformed.",
+    "network_failed": "Network request failed: {{reason}}",
+    "request_timeout": "Request timed out after {{seconds}}s.",
+    "server_error": "A server error occurred. This is usually temporary — please try again.",
+    "client_error": "A client error occurred. Please check your request parameters."
+  },
+  "notebooks": {
+    "not_found": "Notebook not found: {{id}}",
+    "created": "Notebook created successfully.",
+    "deleted": "Notebook deleted successfully.",
+    "renamed": "Notebook renamed successfully.",
+    "list_empty": "No notebooks found.",
+    "share_updated": "Notebook sharing settings updated."
+  },
+  "sources": {
+    "not_found": "Source not found: {{id}}",
+    "add_failed": "Failed to add source: {{source}}",
+    "processing_failed": "Source {{id}} failed to process.",
+    "timeout": "Source {{id}} timed out after {{seconds}}s.",
+    "added": "Source added successfully.",
+    "deleted": "Source deleted successfully.",
+    "renamed": "Source renamed successfully.",
+    "refreshed": "Source refreshed successfully.",
+    "waiting": "Waiting for source to be ready...",
+    "ready": "Source is ready.",
+    "file_not_found": "File not found: {{path}}",
+    "invalid_file": "Not a regular file: {{path}}",
+    "invalid_url": "Invalid or unsupported URL: {{url}}"
+  },
+  "artifacts": {
+    "not_found": "Artifact not found: {{id}}",
+    "not_ready": "No completed {{type}} artifact found.",
+    "parse_failed": "Failed to parse {{type}}: {{details}}",
+    "download_failed": "Failed to download {{type}}: {{details}}",
+    "generation_started": "Artifact generation started.",
+    "generation_complete": "Artifact generation completed.",
+    "generation_failed": "Artifact generation failed.",
+    "generation_pending": "Artifact generation is pending.",
+    "generation_in_progress": "Artifact generation is in progress.",
+    "deleted": "Artifact deleted successfully.",
+    "renamed": "Artifact renamed successfully.",
+    "exported": "Artifact exported successfully.",
+    "invalid_format": "Invalid format '{{format}}'. Allowed values: {{allowed}}",
+    "invalid_slide_index": "Slide index must be >= 0, got {{index}}."
+  },
+  "chat": {
+    "ask_failed": "Chat request failed: {{reason}}",
+    "rate_limited": "Chat request was rate limited or rejected. Please wait and try again.",
+    "timeout": "Chat request timed out.",
+    "invalid_mode": "Invalid chat mode: {{mode}}",
+    "custom_prompt_required": "A custom prompt is required when goal is CUSTOM.",
+    "cache_cleared": "Conversation cache cleared.",
+    "configured": "Chat settings updated.",
+    "mode_set": "Chat mode updated."
+  },
+  "notes": {
+    "not_found": "Note not found: {{id}}",
+    "created": "Note created successfully.",
+    "updated": "Note updated successfully.",
+    "deleted": "Note deleted successfully."
+  },
+  "sharing": {
+    "status_fetched": "Sharing status retrieved.",
+    "updated": "Sharing settings updated.",
+    "user_added": "User {{email}} added with {{permission}} permission.",
+    "user_removed": "User {{email}} removed from shared access.",
+    "permission_updated": "Permission for {{email}} updated to {{permission}}."
+  },
+  "settings": {
+    "fetched": "Settings retrieved.",
+    "updated": "Settings updated successfully.",
+    "language_set": "Output language set to '{{language}}'."
+  },
+  "health": {
+    "ok": "Service is healthy.",
+    "degraded": "Service is degraded."
+  }
+}
