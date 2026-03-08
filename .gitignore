@@ -1,5 +1,15 @@
 node_modules
+dist
+coverage
 package-lock.json
-.env
-.env.*
 yarn.lock
+
+# Real environment files — never commit
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Allow the example template
+!.env.example

@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    container_name: notebooklm-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      HOST: 0.0.0.0
+      API_PREFIX: ${API_PREFIX:-/api/v1}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-60}
+      REQUEST_TIMEOUT_MS: ${REQUEST_TIMEOUT_MS:-30000}
+      NOTEBOOKLM_TIMEOUT_MS: ${NOTEBOOKLM_TIMEOUT_MS:-60000}
+      NOTEBOOKLM_STORAGE_PATH: ${NOTEBOOKLM_STORAGE_PATH:-}
+      NOTEBOOKLM_AUTH_JSON: ${NOTEBOOKLM_AUTH_JSON:-}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - ./src:/app/src:ro
+      - ./locales:/app/locales:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      - ./.env:/app/.env:ro
+    command: >
+      npx ts-node-dev
+      --respawn
+      --transpile-only
+      -r dotenv/config
+      -r tsconfig-paths/register
+      src/infrastructure/framework/server.ts
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    networks:
+      - notebooklm-net
+
+networks:
+  notebooklm-net:
+    driver: bridge
