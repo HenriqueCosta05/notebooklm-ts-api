@@ -1,4 +1,4 @@
-import { ResponseModel } from "~/application/ports/response-model";
+import type { ResponseModel } from "~/application/ports/response-model";
 
 export type ErrorParams = {
   name?: string;
@@ -10,17 +10,14 @@ export type ErrorParams = {
 
 export type ErrorResponseModel = Omit<ResponseModel<ErrorParams>, "body">;
 
-export class DefaultApplicationError
-  extends Error
-  implements ErrorResponseModel
-{
+export class DefaultApplicationError extends Error implements ErrorResponseModel {
   public statusCode = 500;
   public messages: string[] = [];
 
   constructor(message?: string) {
     super(message);
-    this.message = message || this.name;
     this.name = "DefaultApplicationError";
+    this.message = message ?? this.name;
     this.messages.push(this.message);
   }
 }
