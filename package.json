@@ -4,8 +4,8 @@
   "description": "An unofficial API alternative for notebook-lm py for Node.js developers.",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev -r 'dotenv/config' -r 'tsconfig-paths/register' src/infrastructure/express/server.ts",
-    "start": "NODE_ENV=production node -r 'dotenv/config' dist/infrastructure/express/server.js",
+    "dev": "ts-node-dev -r dotenv/config -r tsconfig-paths/register src/infrastructure/framework/server.ts",
+    "start": "NODE_ENV=production node -r dotenv/config -r tsconfig-paths/register dist/infrastructure/framework/server.js",
     "build": "rm -R dist ; babel src --extensions \".ts,.js\" --out-dir dist --copy-files --no-copy-ignored",
     "buildAndStart": "npm run build && NODE_ENV=production npm start",
     "test": "jest --bail --runInBand --silent --setupFiles dotenv/config",
@@ -17,15 +17,8 @@
     "test:watchIntegration": "npm run test:watch -- --testMatch \"**/?*.test.ts?(x)\"",
     "lint:log": "eslint 'src/**/*.ts'",
     "lint": "eslint 'src/**/*.ts' --fix --max-warnings 0",
-    "lint:ts": "tsc --noEmit",
+    "lint:ts": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "prePush": "npm run test:coverage && npm run lint && npm run lint:ts && npm run build",
-    "migrate:make": "knex --knexfile src/infrastructure/knex/knexfile.ts migrate:make -x ts",
-    "migrate:dev": "knex --knexfile ./src/infrastructure/knex/knexfile.ts migrate:latest --env development",
-    "migrate:prod": "knex --knexfile ./src/infrastructure/knex/knexfile.ts migrate:latest --env production",
-    "rollback:dev": "knex --knexfile ./src/infrastructure/knex/knexfile.ts migrate:rollback --env development",
-    "rollback:prod": "knex --knexfile ./src/infrastructure/knex/knexfile.ts migrate:rollback --env production",
-    "database:up": "docker-compose up -d",
-    "database:down": "docker-compose down",
     "docker:dropAll": "docker stop $(docker ps -a -q) && docker system prune -f"
   },
   "repository": {
@@ -41,7 +34,12 @@
   },
   "homepage": "https://github.com/HenriqueCosta05/notebooklm-ts-api#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",
@@ -51,6 +49,14 @@
     "jest": "^30.2.0",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@types/cors": "^2.8.17",
+    "eslint": "^9.29.0",
+    "@typescript-eslint/parser": "^8.34.1",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "prettier": "^3.5.3",
+    "eslint-config-prettier": "^10.1.5",
+    "tsconfig-paths": "^4.2.0",
+    "ts-node-dev": "^2.0.0"
   }
 }

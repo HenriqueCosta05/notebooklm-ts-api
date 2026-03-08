@@ -10,10 +10,11 @@
     "sourceMap": true,
     "rootDir": "src",
     "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "~/*": ["src/*"],
     },
   },
   "include": ["src"],
-  "exclude": [],
+  "exclude": ["node_modules", "dist", "tests"],
 }
