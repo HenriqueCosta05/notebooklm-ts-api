@@ -13,3 +13,6 @@ yarn.lock
 
 # Allow the example template
 !.env.example
+
+# TLS certificates — private keys must never be committed
+nginx/certs/

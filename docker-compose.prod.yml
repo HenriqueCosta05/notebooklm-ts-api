@@ -3,13 +3,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: builder
-    container_name: notebooklm-api-dev
+      target: runner
+    container_name: notebooklm-api-prod
     restart: unless-stopped
     expose:
       - "3000"
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 3000
       HOST: 0.0.0.0
       API_PREFIX: ${API_PREFIX:-/api/v1}
@@ -20,47 +20,35 @@ services:
       NOTEBOOKLM_TIMEOUT_MS: ${NOTEBOOKLM_TIMEOUT_MS:-60000}
       NOTEBOOKLM_STORAGE_PATH: ${NOTEBOOKLM_STORAGE_PATH:-}
       NOTEBOOKLM_AUTH_JSON: ${NOTEBOOKLM_AUTH_JSON:-}
-      LOG_LEVEL: ${LOG_LEVEL:-debug}
-    volumes:
-      - ./src:/app/src:ro
-      - ./locales:/app/locales:ro
-      - ./tsconfig.json:/app/tsconfig.json:ro
-      - ./.env:/app/.env:ro
-    command: >
-      npx ts-node-dev
-      --respawn
-      --transpile-only
-      -r dotenv/config
-      -r tsconfig-paths/register
-      src/infrastructure/framework/server.ts
+      LOG_LEVEL: ${LOG_LEVEL:-info}
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://notebooklm-api-dev:3000/api/v1/health"]
+      test: ["CMD", "wget", "-qO-", "http://notebooklm-api-prod:3000/api/v1/health"]
       interval: 30s
       timeout: 5s
       start_period: 15s
       retries: 3
     networks:
-      - notebooklm-dev-net
+      - notebooklm-prod-net
 
   proxy:
     image: nginx:alpine
-    container_name: notebooklm-proxy-dev
+    container_name: notebooklm-proxy-prod
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
       - ./nginx/certs:/etc/nginx/certs:ro
     depends_on:
       api:
         condition: service_healthy
     networks:
-      notebooklm-dev-net:
+      notebooklm-prod-net:
         aliases:
-          - notebooklm.api.dev
+          - notebooklm.api.prod
 
 networks:
-  notebooklm-dev-net:
-    name: notebooklm-dev-net
+  notebooklm-prod-net:
+    name: notebooklm-prod-net
     driver: bridge

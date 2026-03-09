@@ -1,19 +1,19 @@
-FROM node:20-alpine AS deps
+FROM node:24 AS deps
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 RUN npm ci --omit=dev
 
 
-FROM node:20-alpine AS builder
+FROM node:24 AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json tsconfig.json ./
+COPY package.json tsconfig.json ./
 
-RUN npm ci
+RUN npm install
 
 COPY src ./src
 COPY locales ./locales
@@ -21,7 +21,7 @@ COPY locales ./locales
 RUN npx tsc --project tsconfig.json
 
 
-FROM node:20-alpine AS runner
+FROM node:24 AS runner
 
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 --ingroup nodejs appuser
@@ -38,8 +38,6 @@ ENV NODE_ENV=production \
     HOST=0.0.0.0
 
 USER appuser
-
-EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD wget -qO- http://localhost:3000/api/v1/health || exit 1
