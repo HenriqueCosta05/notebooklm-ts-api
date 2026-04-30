@@ -1,0 +1,1364 @@
+{
+  "info": {
+    "name": "NotebookLM TypeScript API",
+    "description": "Complete API collection for NotebookLM TypeScript + Node.js",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        },
+        "description": "Check API health status"
+      },
+      "response": []
+    },
+    {
+      "name": "Notebooks",
+      "item": [
+        {
+          "name": "List Notebooks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks"]
+            },
+            "description": "Get list of all notebooks"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Notebook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"My New Notebook\",\n  \"description\": \"A notebook for research\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks"]
+            },
+            "description": "Create a new notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notebook",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}"]
+            },
+            "description": "Get a specific notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notebook Description",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/description",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "description"]
+            },
+            "description": "Get notebook description"
+          },
+          "response": []
+        },
+        {
+          "name": "Rename Notebook",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Notebook Title\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}"]
+            },
+            "description": "Rename a notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notebook",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}"]
+            },
+            "description": "Delete a notebook"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sources",
+      "item": [
+        {
+          "name": "List Sources",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources"]
+            },
+            "description": "Get list of sources in a notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Source",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}"]
+            },
+            "description": "Get a specific source"
+          },
+          "response": []
+        },
+        {
+          "name": "Add URL Source",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com/article\",\n  \"title\": \"Example Article\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/url",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources", "url"]
+            },
+            "description": "Add a URL source to a notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Text Source",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"This is the source text content\",\n  \"title\": \"Text Source Title\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/text",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources", "text"]
+            },
+            "description": "Add a text source to a notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Drive Source",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driveUrl\": \"https://drive.google.com/file/d/FILE_ID/view\",\n  \"title\": \"Drive Document\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/drive",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources", "drive"]
+            },
+            "description": "Add a Google Drive source to a notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Rename Source",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Source Title\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}"]
+            },
+            "description": "Rename a source"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Source",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}"]
+            },
+            "description": "Delete a source"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Source",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}", "refresh"]
+            },
+            "description": "Refresh a source"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Source Guide",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}/guide",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}", "guide"]
+            },
+            "description": "Get a guide for a source"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Source Full Text",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}/fulltext",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}", "fulltext"]
+            },
+            "description": "Get full text of a source"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "item": [
+        {
+          "name": "Ask Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What are the main topics covered in the sources?\",\n  \"conversationId\": \"{{conversation_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/ask",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "chat", "ask"]
+            },
+            "description": "Ask a question in the notebook chat"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversation ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/conversation-id",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "chat", "conversation-id"]
+            },
+            "description": "Get conversation ID for the notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversation History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/history",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "chat", "history"]
+            },
+            "description": "Get conversation history for the notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cached Turns",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/cache/{{conversation_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "chat", "cache", "{{conversation_id}}"]
+            },
+            "description": "Get cached conversation turns"
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Conversation Cache",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/cache",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "chat", "cache"]
+            },
+            "description": "Clear all conversation cache"
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Specific Conversation Cache",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/cache/{{conversation_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "chat", "cache", "{{conversation_id}}"]
+            },
+            "description": "Clear cache for a specific conversation"
+          },
+          "response": []
+        },
+        {
+          "name": "Configure Chat",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"systemPrompt\": \"You are a helpful assistant\",\n  \"temperature\": 0.7,\n  \"maxTokens\": 2000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/configure",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "chat", "configure"]
+            },
+            "description": "Configure chat settings"
+          },
+          "response": []
+        },
+        {
+          "name": "Set Chat Mode",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"expert\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/mode",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "chat", "mode"]
+            },
+            "description": "Set chat mode (e.g., expert, simple, etc.)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Artifacts",
+      "item": [
+        {
+          "name": "List Artifacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts"]
+            },
+            "description": "Get list of all artifacts"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Artifact",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}"]
+            },
+            "description": "Get a specific artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Audio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Generate an audio summary of the sources\",\n  \"voice\": \"default\",\n  \"speed\": 1.0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/audio",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "audio"]
+            },
+            "description": "Generate audio artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Video",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Generate a video summary\",\n  \"duration\": 60,\n  \"format\": \"mp4\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/video",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "video"]
+            },
+            "description": "Generate video artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Research Report\",\n  \"style\": \"formal\",\n  \"sections\": [\"summary\", \"analysis\", \"conclusions\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/report",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "report"]
+            },
+            "description": "Generate report artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numberOfQuestions\": 10,\n  \"difficulty\": \"medium\",\n  \"topics\": [\"all\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/quiz",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "quiz"]
+            },
+            "description": "Generate quiz artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Flashcards",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numberOfCards\": 20,\n  \"category\": \"key-concepts\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/flashcards",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "flashcards"]
+            },
+            "description": "Generate flashcards artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Infographic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic\": \"key-findings\",\n  \"style\": \"modern\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/infographic",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "infographic"]
+            },
+            "description": "Generate infographic artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Slide Deck",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Presentation\",\n  \"numberOfSlides\": 10,\n  \"style\": \"professional\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/slide-deck",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "slide-deck"]
+            },
+            "description": "Generate slide deck artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Data Table",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Key data from sources\",\n  \"format\": \"markdown\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/data-table",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "data-table"]
+            },
+            "description": "Generate data table artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Mind Map",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic\": \"main-concepts\",\n  \"depth\": 3\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/mind-map",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "mind-map"]
+            },
+            "description": "Generate mind map artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Poll Artifact Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/status/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "status", "{{task_id}}"]
+            },
+            "description": "Poll the status of an artifact generation task"
+          },
+          "response": []
+        },
+        {
+          "name": "Rename Artifact",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Artifact Name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}"]
+            },
+            "description": "Rename an artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Artifact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"format\": \"pdf\",\n  \"includeMetadata\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}/export",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}", "export"]
+            },
+            "description": "Export an artifact"
+          },
+          "response": []
+        },
+        {
+          "name": "Revise Slide",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slideNumber\": 1,\n  \"changes\": \"Update the title and add more information\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}/revise-slide",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}", "revise-slide"]
+            },
+            "description": "Revise a specific slide in a slide deck"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Suggestions for Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/suggestions",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "suggestions"]
+            },
+            "description": "Get suggestions for report artifacts"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Artifact",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}"]
+            },
+            "description": "Delete an artifact"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Research",
+      "item": [
+        {
+          "name": "Start Research",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Research about AI\",\n  \"mode\": \"fast\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/research",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "research"]
+            },
+            "description": "Start a research task"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Research Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/research/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "research", "{{task_id}}"]
+            },
+            "description": "Get the status of a research task"
+          },
+          "response": []
+        },
+        {
+          "name": "Import Research Results",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/research/{{task_id}}/import",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "research", "{{task_id}}", "import"]
+            },
+            "description": "Import research results into the notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Wait for Research Completion",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/research/{{task_id}}/wait",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "research", "{{task_id}}", "wait"]
+            },
+            "description": "Wait for research task completion (blocking call)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sharing",
+      "item": [
+        {
+          "name": "Get Share Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/share",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "share"]
+            },
+            "description": "Get the sharing status of a notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Set Public/Private",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isPublic\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/public",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "share", "public"]
+            },
+            "description": "Set a notebook as public or private"
+          },
+          "response": []
+        },
+        {
+          "name": "Add User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"permission\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/users",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "share", "users"]
+            },
+            "description": "Add a user to share the notebook with"
+          },
+          "response": []
+        },
+        {
+          "name": "Remove User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/users",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "share", "users"]
+            },
+            "description": "Remove a user from the notebook"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Permission",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"permission\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/users",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "share", "users"]
+            },
+            "description": "Update a user's permission level"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Shared Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/users",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "share", "users"]
+            },
+            "description": "Get list of users with whom the notebook is shared"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Share URL",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-notebooklm-auth",
+                "value": "{{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/url",
+              "host": ["{{base_url}}"],
+              "path": ["notebooks", "{{notebook_id}}", "share", "url"]
+            },
+            "description": "Get the share URL for a public notebook"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "your_notebooklm_auth_token_here",
+      "type": "string"
+    },
+    {
+      "key": "notebook_id",
+      "value": "notebook_123",
+      "type": "string"
+    },
+    {
+      "key": "source_id",
+      "value": "source_456",
+      "type": "string"
+    },
+    {
+      "key": "artifact_id",
+      "value": "artifact_789",
+      "type": "string"
+    },
+    {
+      "key": "conversation_id",
+      "value": "conv_123",
+      "type": "string"
+    },
+    {
+      "key": "task_id",
+      "value": "task_123",
+      "type": "string"
+    }
+  ]
+}
