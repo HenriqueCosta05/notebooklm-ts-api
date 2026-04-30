@@ -1,6 +1,6 @@
 {
   "name": "notebooklm-ts",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "An unofficial API alternative for notebook-lm py for Node.js developers.",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "lint": "eslint 'src/**/*.ts' --fix --max-warnings 0",
     "lint:ts": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "prePush": "npm run test:coverage && npm run lint && npm run lint:ts && npm run build",
+    "auth:extract": "ts-node -r dotenv/config -r tsconfig-paths/register src/scripts/extract-auth.ts",
     "docker:dropAll": "docker stop $(docker ps -a -q) && docker system prune -f"
   },
   "repository": {
@@ -34,29 +35,30 @@
   },
   "homepage": "https://github.com/HenriqueCosta05/notebooklm-ts-api#readme",
   "dependencies": {
-    "express": "^5.2.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
+    "express": "^5.2.1",
     "express-rate-limit": "^7.5.0",
     "helmet": "^8.0.0",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@jest/globals": "^30.2.0",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.3.5",
+    "@typescript-eslint/eslint-plugin": "^8.34.1",
+    "@typescript-eslint/parser": "^8.34.1",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
     "jest": "^30.2.0",
+    "playwright": "^1.59.1",
+    "prettier": "^3.5.3",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
-    "@types/cors": "^2.8.17",
-    "eslint": "^9.29.0",
-    "@typescript-eslint/parser": "^8.34.1",
-    "@typescript-eslint/eslint-plugin": "^8.34.1",
-    "prettier": "^3.5.3",
-    "eslint-config-prettier": "^10.1.5",
+    "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
-    "ts-node-dev": "^2.0.0"
+    "typescript": "^5.9.3"
   }
 }

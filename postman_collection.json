@@ -12,8 +12,12 @@
         "header": [],
         "url": {
           "raw": "{{base_url}}/health",
-          "host": ["{{base_url}}"],
-          "path": ["health"]
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
         },
         "description": "Check API health status"
       },
@@ -26,17 +30,15 @@
           "name": "List Notebooks",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks"
+              ]
             },
             "description": "Get list of all notebooks"
           },
@@ -47,11 +49,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -64,8 +61,12 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks"
+              ]
             },
             "description": "Create a new notebook"
           },
@@ -75,17 +76,16 @@
           "name": "Get Notebook",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}"
+              ]
             },
             "description": "Get a specific notebook"
           },
@@ -95,17 +95,17 @@
           "name": "Get Notebook Description",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/description",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "description"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "description"
+              ]
             },
             "description": "Get notebook description"
           },
@@ -116,11 +116,6 @@
           "request": {
             "method": "PATCH",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -133,8 +128,13 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}"
+              ]
             },
             "description": "Rename a notebook"
           },
@@ -144,17 +144,16 @@
           "name": "Delete Notebook",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}"
+              ]
             },
             "description": "Delete a notebook"
           },
@@ -169,17 +168,17 @@
           "name": "List Sources",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources"
+              ]
             },
             "description": "Get list of sources in a notebook"
           },
@@ -189,17 +188,18 @@
           "name": "Get Source",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources",
+                "{{source_id}}"
+              ]
             },
             "description": "Get a specific source"
           },
@@ -210,11 +210,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -227,8 +222,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/url",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources", "url"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources",
+                "url"
+              ]
             },
             "description": "Add a URL source to a notebook"
           },
@@ -239,11 +241,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -256,8 +253,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/text",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources", "text"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources",
+                "text"
+              ]
             },
             "description": "Add a text source to a notebook"
           },
@@ -268,11 +272,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -285,8 +284,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/drive",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources", "drive"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources",
+                "drive"
+              ]
             },
             "description": "Add a Google Drive source to a notebook"
           },
@@ -297,11 +303,6 @@
           "request": {
             "method": "PATCH",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -314,8 +315,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources",
+                "{{source_id}}"
+              ]
             },
             "description": "Rename a source"
           },
@@ -325,17 +333,18 @@
           "name": "Delete Source",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources",
+                "{{source_id}}"
+              ]
             },
             "description": "Delete a source"
           },
@@ -345,17 +354,19 @@
           "name": "Refresh Source",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}/refresh",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}", "refresh"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources",
+                "{{source_id}}",
+                "refresh"
+              ]
             },
             "description": "Refresh a source"
           },
@@ -365,17 +376,19 @@
           "name": "Get Source Guide",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}/guide",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}", "guide"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources",
+                "{{source_id}}",
+                "guide"
+              ]
             },
             "description": "Get a guide for a source"
           },
@@ -385,17 +398,19 @@
           "name": "Get Source Full Text",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/sources/{{source_id}}/fulltext",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "sources", "{{source_id}}", "fulltext"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "sources",
+                "{{source_id}}",
+                "fulltext"
+              ]
             },
             "description": "Get full text of a source"
           },
@@ -412,11 +427,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
-              {
                 "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
@@ -428,8 +438,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/ask",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "chat", "ask"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "chat",
+                "ask"
+              ]
             },
             "description": "Ask a question in the notebook chat"
           },
@@ -439,17 +456,18 @@
           "name": "Get Conversation ID",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/conversation-id",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "chat", "conversation-id"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "chat",
+                "conversation-id"
+              ]
             },
             "description": "Get conversation ID for the notebook"
           },
@@ -459,17 +477,18 @@
           "name": "Get Conversation History",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/history",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "chat", "history"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "chat",
+                "history"
+              ]
             },
             "description": "Get conversation history for the notebook"
           },
@@ -479,17 +498,19 @@
           "name": "Get Cached Turns",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/cache/{{conversation_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "chat", "cache", "{{conversation_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "chat",
+                "cache",
+                "{{conversation_id}}"
+              ]
             },
             "description": "Get cached conversation turns"
           },
@@ -499,17 +520,18 @@
           "name": "Clear Conversation Cache",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/cache",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "chat", "cache"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "chat",
+                "cache"
+              ]
             },
             "description": "Clear all conversation cache"
           },
@@ -519,17 +541,19 @@
           "name": "Clear Specific Conversation Cache",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/cache/{{conversation_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "chat", "cache", "{{conversation_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "chat",
+                "cache",
+                "{{conversation_id}}"
+              ]
             },
             "description": "Clear cache for a specific conversation"
           },
@@ -540,11 +564,6 @@
           "request": {
             "method": "PUT",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -557,8 +576,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/configure",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "chat", "configure"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "chat",
+                "configure"
+              ]
             },
             "description": "Configure chat settings"
           },
@@ -569,11 +595,6 @@
           "request": {
             "method": "PUT",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -586,8 +607,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/chat/mode",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "chat", "mode"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "chat",
+                "mode"
+              ]
             },
             "description": "Set chat mode (e.g., expert, simple, etc.)"
           },
@@ -602,17 +630,17 @@
           "name": "List Artifacts",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts"
+              ]
             },
             "description": "Get list of all artifacts"
           },
@@ -622,17 +650,18 @@
           "name": "Get Artifact",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "{{artifact_id}}"
+              ]
             },
             "description": "Get a specific artifact"
           },
@@ -643,11 +672,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -660,8 +684,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/audio",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "audio"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "generate",
+                "audio"
+              ]
             },
             "description": "Generate audio artifact"
           },
@@ -672,11 +704,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -689,8 +716,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/video",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "video"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "generate",
+                "video"
+              ]
             },
             "description": "Generate video artifact"
           },
@@ -701,11 +736,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -718,8 +748,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/report",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "report"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "generate",
+                "report"
+              ]
             },
             "description": "Generate report artifact"
           },
@@ -730,11 +768,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -747,8 +780,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/quiz",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "quiz"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "generate",
+                "quiz"
+              ]
             },
             "description": "Generate quiz artifact"
           },
@@ -759,11 +800,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -776,8 +812,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/flashcards",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "flashcards"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "generate",
+                "flashcards"
+              ]
             },
             "description": "Generate flashcards artifact"
           },
@@ -788,11 +832,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -805,8 +844,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/infographic",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "infographic"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "generate",
+                "infographic"
+              ]
             },
             "description": "Generate infographic artifact"
           },
@@ -817,11 +864,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -834,8 +876,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/slide-deck",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "slide-deck"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "generate",
+                "slide-deck"
+              ]
             },
             "description": "Generate slide deck artifact"
           },
@@ -846,11 +896,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -863,8 +908,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/data-table",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "data-table"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "generate",
+                "data-table"
+              ]
             },
             "description": "Generate data table artifact"
           },
@@ -875,11 +928,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -892,8 +940,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/generate/mind-map",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "generate", "mind-map"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "generate",
+                "mind-map"
+              ]
             },
             "description": "Generate mind map artifact"
           },
@@ -903,17 +959,19 @@
           "name": "Poll Artifact Status",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/status/{{task_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "status", "{{task_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "status",
+                "{{task_id}}"
+              ]
             },
             "description": "Poll the status of an artifact generation task"
           },
@@ -924,11 +982,6 @@
           "request": {
             "method": "PATCH",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -941,8 +994,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "{{artifact_id}}"
+              ]
             },
             "description": "Rename an artifact"
           },
@@ -953,11 +1013,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -970,8 +1025,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}/export",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}", "export"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "{{artifact_id}}",
+                "export"
+              ]
             },
             "description": "Export an artifact"
           },
@@ -982,11 +1045,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -999,8 +1057,16 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}/revise-slide",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}", "revise-slide"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "{{artifact_id}}",
+                "revise-slide"
+              ]
             },
             "description": "Revise a specific slide in a slide deck"
           },
@@ -1010,17 +1076,18 @@
           "name": "Get Suggestions for Reports",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/suggestions",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "suggestions"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "suggestions"
+              ]
             },
             "description": "Get suggestions for report artifacts"
           },
@@ -1030,17 +1097,18 @@
           "name": "Delete Artifact",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/artifacts/{{artifact_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "artifacts", "{{artifact_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "artifacts",
+                "{{artifact_id}}"
+              ]
             },
             "description": "Delete an artifact"
           },
@@ -1057,11 +1125,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
-              {
                 "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
@@ -1073,8 +1136,14 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/research",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "research"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "research"
+              ]
             },
             "description": "Start a research task"
           },
@@ -1084,17 +1153,18 @@
           "name": "Get Research Status",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/research/{{task_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "research", "{{task_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "research",
+                "{{task_id}}"
+              ]
             },
             "description": "Get the status of a research task"
           },
@@ -1104,17 +1174,19 @@
           "name": "Import Research Results",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/research/{{task_id}}/import",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "research", "{{task_id}}", "import"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "research",
+                "{{task_id}}",
+                "import"
+              ]
             },
             "description": "Import research results into the notebook"
           },
@@ -1124,17 +1196,19 @@
           "name": "Wait for Research Completion",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/research/{{task_id}}/wait",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "research", "{{task_id}}", "wait"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "research",
+                "{{task_id}}",
+                "wait"
+              ]
             },
             "description": "Wait for research task completion (blocking call)"
           },
@@ -1149,17 +1223,17 @@
           "name": "Get Share Status",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/share",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "share"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "share"
+              ]
             },
             "description": "Get the sharing status of a notebook"
           },
@@ -1170,11 +1244,6 @@
           "request": {
             "method": "PATCH",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -1187,8 +1256,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/public",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "share", "public"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "share",
+                "public"
+              ]
             },
             "description": "Set a notebook as public or private"
           },
@@ -1199,11 +1275,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -1216,8 +1287,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/users",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "share", "users"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "share",
+                "users"
+              ]
             },
             "description": "Add a user to share the notebook with"
           },
@@ -1228,11 +1306,6 @@
           "request": {
             "method": "DELETE",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -1245,8 +1318,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/users",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "share", "users"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "share",
+                "users"
+              ]
             },
             "description": "Remove a user from the notebook"
           },
@@ -1257,11 +1337,6 @@
           "request": {
             "method": "PATCH",
             "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
@@ -1274,8 +1349,15 @@
             },
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/users",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "share", "users"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "share",
+                "users"
+              ]
             },
             "description": "Update a user's permission level"
           },
@@ -1285,17 +1367,18 @@
           "name": "Get Shared Users",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/users",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "share", "users"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "share",
+                "users"
+              ]
             },
             "description": "Get list of users with whom the notebook is shared"
           },
@@ -1305,17 +1388,18 @@
           "name": "Get Share URL",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "x-notebooklm-auth",
-                "value": "{{auth_token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{base_url}}/notebooks/{{notebook_id}}/share/url",
-              "host": ["{{base_url}}"],
-              "path": ["notebooks", "{{notebook_id}}", "share", "url"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notebooks",
+                "{{notebook_id}}",
+                "share",
+                "url"
+              ]
             },
             "description": "Get the share URL for a public notebook"
           },
@@ -1328,11 +1412,6 @@
     {
       "key": "base_url",
       "value": "http://localhost:3000/api/v1",
-      "type": "string"
-    },
-    {
-      "key": "auth_token",
-      "value": "your_notebooklm_auth_token_here",
       "type": "string"
     },
     {

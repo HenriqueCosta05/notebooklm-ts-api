@@ -7,6 +7,7 @@ import { ArtifactsAPI } from "./apis/artifacts.api";
 import { ChatAPI } from "./apis/chat.api";
 import { SharingAPI } from "./apis/sharing.api";
 import { SettingsAPI } from "./apis/settings.api";
+import { ResearchAPI } from "./apis/research.api";
 import { extractCsrfFromHtml, extractSessionIdFromHtml } from "./auth";
 
 export interface NotebookLMClientOptions {
@@ -24,6 +25,7 @@ export class NotebookLMClient {
   readonly chat: ChatAPI;
   readonly sharing: SharingAPI;
   readonly settings: SettingsAPI;
+  readonly research: ResearchAPI;
 
   constructor(auth: AuthTokens, options: NotebookLMClientOptions = {}) {
     const refreshCallback: RefreshCallback = () => this.refreshAuth();
@@ -40,6 +42,7 @@ export class NotebookLMClient {
     this.chat = new ChatAPI(this.core);
     this.sharing = new SharingAPI(this.core);
     this.settings = new SettingsAPI(this.core);
+    this.research = new ResearchAPI(this.core);
   }
 
   get auth(): AuthTokens {

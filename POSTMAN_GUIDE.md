@@ -10,29 +10,53 @@ This directory contains Postman collection and environment files for testing the
 
 ## Setup Instructions
 
-### 1. Import the Collection
+### 1. Extract Authentication (Required First)
+
+Before using Postman, you must extract your NotebookLM credentials:
+
+#### Option A: Automated Extraction (Recommended)
+
+```bash
+npm run auth:extract
+```
+
+A browser window opens. Log in with your Google account. Credentials are automatically extracted and saved to `.notebooklm-auth/`.
+
+#### Option B: Manual Extraction
+
+If Option A doesn't work, see [docs/authentication.md](./docs/authentication.md) for manual extraction steps.
+
+### 2. Import the Collection
 
 1. Open Postman
 2. Click **Import** in the top-left corner
 3. Select **postman_collection.json**
 4. The collection will be imported with all endpoints organized by category
 
-### 2. Import an Environment
+### 3. Import an Environment
 
 1. Click the **Environments** icon on the left sidebar
 2. Click **Import**
 3. Select either **postman_environment_dev.json** or **postman_environment_prod.json**
 4. Click the environment dropdown in the top-right and select your environment
 
-### 3. Configure Authentication
+### 4. Configure Base URL
 
-After importing an environment, you need to set your NotebookLM authentication token:
+Update the base URL if needed:
 
 1. Click the environment name in the top-right dropdown
 2. Click **Edit** (pencil icon)
-3. Find the `auth_token` variable
-4. Paste your NotebookLM authentication token
+3. Find the `base_url` variable
+4. Update it to match your API location (default is `http://localhost:3000/api/v1`)
 5. Click **Save**
+
+### 5. Start the API Server
+
+```bash
+npm run dev
+```
+
+The API server starts and loads your extracted credentials automatically.
 
 ## Environment Variables
 
@@ -41,7 +65,6 @@ Each environment includes the following variables:
 | Variable | Purpose | Required |
 |----------|---------|----------|
 | `base_url` | API base URL | Yes |
-| `auth_token` | NotebookLM authentication token | Yes |
 | `notebook_id` | Current notebook ID | No |
 | `source_id` | Current source ID | No |
 | `artifact_id` | Current artifact ID | No |
@@ -150,15 +173,15 @@ Each environment includes the following variables:
 
 ## Authentication
 
-The API uses the `x-notebooklm-auth` header for authentication. This is automatically added to all requests by referencing the `{{auth_token}}` variable.
+Postman requests no longer need an auth token or custom header. The API falls back to the browser-extracted session saved in `.notebooklm-auth/storage_state.json`.
 
-### Getting Your Auth Token
+If you have not extracted cookies yet, run:
 
-1. Log in to your NotebookLM account
-2. Open browser developer tools (F12)
-3. Go to Application/Storage tab
-4. Find and copy the authentication token
-5. Paste it into the `auth_token` variable in your Postman environment
+```bash
+npm run auth:extract
+```
+
+The API server loads that saved session automatically, so Postman can send plain requests without any auth setup.
 
 ## Tips & Tricks
 
@@ -178,9 +201,9 @@ The API uses the `x-notebooklm-auth` header for authentication. This is automati
 ## Troubleshooting
 
 ### 401 Unauthorized
-- Verify your `auth_token` is correct
-- Check if the token has expired
-- Ensure the `x-notebooklm-auth` header is being sent
+- Verify `.notebooklm-auth/storage_state.json` exists
+- Re-run `npm run auth:extract` to refresh the saved session
+- Make sure the API server can read `NOTEBOOKLM_STORAGE_PATH` if you configured a custom path
 
 ### 404 Not Found
 - Verify the notebook/source/artifact IDs are correct

@@ -1,4 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
+import * as fs from "fs";
+import * as path from "path";
 import { AuthTokens } from "../../infrastructure/third-party/notebooklm/auth";
 import type { StorageState } from "../../infrastructure/third-party/notebooklm/auth";
 import {
@@ -30,6 +32,13 @@ declare global {
 
 /** Name of the request header that carries the base64-encoded storage state. */
 const AUTH_HEADER = "x-notebooklm-auth";
+
+/** Default location for the browser-extracted Playwright storage state. */
+const PROJECT_STORAGE_PATH = path.join(
+  process.cwd(),
+  ".notebooklm-auth",
+  "storage_state.json",
+);
 
 /**
  * Decodes and validates a base64-encoded Playwright `storage_state` JSON
@@ -95,20 +104,26 @@ export const notebookLMAuthMiddleware = async (
 ): Promise<void> => {
   const headerValue = req.headers[AUTH_HEADER];
 
-  if (!headerValue || typeof headerValue !== "string" || !headerValue.trim()) {
-    res.status(401).json({
-      statusCode: 401,
-      error: "Unauthorized",
-      message: t("errors.unauthorized"),
-    });
-    return;
-  }
-
   try {
-    const storageState = parseStorageStateFromHeader(headerValue);
-    const cookies = extractCookiesFromStorage(storageState);
-    const { csrfToken, sessionId } = await fetchTokens(cookies);
-    req.notebookLMAuth = new AuthTokens(cookies, csrfToken, sessionId);
+    if (typeof headerValue === "string" && headerValue.trim()) {
+      const storageState = parseStorageStateFromHeader(headerValue);
+      const cookies = extractCookiesFromStorage(storageState);
+      const { csrfToken, sessionId } = await fetchTokens(cookies);
+      req.notebookLMAuth = new AuthTokens(cookies, csrfToken, sessionId);
+      next();
+      return;
+    }
+
+    if (fs.existsSync(PROJECT_STORAGE_PATH)) {
+      const { cookies } = AuthTokens.fromStorageSync(PROJECT_STORAGE_PATH);
+      const { csrfToken, sessionId } = await fetchTokens(cookies);
+      req.notebookLMAuth = new AuthTokens(cookies, csrfToken, sessionId);
+      next();
+      return;
+    }
+
+    const authTokens = await AuthTokens.fromStorage();
+    req.notebookLMAuth = authTokens;
     next();
   } catch (err) {
     const message = err instanceof Error ? err.message : t("errors.unauthorized");

@@ -3,6 +3,8 @@ import { NotebooksUseCase } from "../../application/use-cases/notebooks.use-case
 import { SourcesUseCase } from "../../application/use-cases/sources.use-case";
 import { ArtifactsUseCase } from "../../application/use-cases/artifacts.use-case";
 import { ChatUseCase } from "../../application/use-cases/chat.use-case";
+import { ResearchUseCase } from "../../application/use-cases/research.use-case";
+import { SharingUseCase } from "../../application/use-cases/sharing.use-case";
 
 export interface NotebookLMFacade {
   client: NotebookLMClient;
@@ -10,6 +12,8 @@ export interface NotebookLMFacade {
   sources: SourcesUseCase;
   artifacts: ArtifactsUseCase;
   chat: ChatUseCase;
+  research: ResearchUseCase;
+  sharing: SharingUseCase;
 }
 
 export const createNotebookLMClient = async (
@@ -23,6 +27,8 @@ export const createNotebookLMClient = async (
     sources: new SourcesUseCase(client),
     artifacts: new ArtifactsUseCase(client),
     chat: new ChatUseCase(client),
+    research: new ResearchUseCase(client),
+    sharing: new SharingUseCase(client),
   };
 };
 
@@ -34,4 +40,6 @@ export const createNotebookLMClientFromAuth = (
   sources: new SourcesUseCase(client),
   artifacts: new ArtifactsUseCase(client),
   chat: new ChatUseCase(client),
+  research: new ResearchUseCase(client),
+  sharing: new SharingUseCase(client),
 });

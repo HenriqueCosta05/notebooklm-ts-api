@@ -21,11 +21,16 @@ export interface StorageState {
   origins?: unknown[];
 }
 
-const MINIMUM_REQUIRED_COOKIES = new Set(["SID"]);
+const SESSION_COOKIE_NAMES = new Set([
+  "SID",
+  "__Secure-1PSID",
+  "__Secure-3PSID",
+]);
 
 const ALLOWED_COOKIE_DOMAINS = new Set([
   ".google.com",
   "notebooklm.google.com",
+  "accounts.google.com",
   ".googleusercontent.com",
 ]);
 
@@ -94,7 +99,6 @@ const loadStorageState = (storagePath?: string): StorageState => {
 
 export const extractCookiesFromStorage = (storageState: StorageState): AuthCookies => {
   const cookies: AuthCookies = {};
-  const cookieDomains: Record<string, string> = {};
 
   for (const cookie of storageState.cookies) {
     const domain = cookie.domain ?? "";
@@ -105,14 +109,14 @@ export const extractCookiesFromStorage = (storageState: StorageState): AuthCooki
     const isBaseDomain = domain === ".google.com";
     if (!(name in cookies) || isBaseDomain) {
       cookies[name] = cookie.value ?? "";
-      cookieDomains[name] = domain;
     }
   }
 
-  const missing = [...MINIMUM_REQUIRED_COOKIES].filter((k) => !(k in cookies));
-  if (missing.length > 0) {
+  const hasSessionCookie = [...SESSION_COOKIE_NAMES].some((name) => name in cookies);
+  if (!hasSessionCookie) {
     throw new Error(
-      `Missing required cookies: ${missing.join(", ")}\nRun 'notebooklm login' to authenticate.`
+      "Missing required session cookie. Expected one of: SID, __Secure-1PSID, __Secure-3PSID.\n" +
+        "Run 'notebooklm login' to authenticate."
     );
   }
 
@@ -177,7 +181,6 @@ export const fetchTokens = async (
 
   const finalUrl = response.url;
   const html = await response.text();
-
   const csrfToken = extractCsrfFromHtml(html, finalUrl);
   const sessionId = extractSessionIdFromHtml(html, finalUrl);
 

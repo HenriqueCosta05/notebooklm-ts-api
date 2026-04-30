@@ -4,13 +4,44 @@ NotebookLM does not expose a public API. Access relies entirely on **cookie-base
 
 ---
 
+## Quick Start
+
+### Method 1: Automated Extraction (Recommended)
+
+
+> **Getting "This browser or app may not be secure"?** See [Google Auth Security Guide](./google-auth-security.md) for solutions.
+```bash
+npm run auth:extract
+```
+
+A browser window opens automatically. Log in with your Google account, and credentials are automatically extracted and saved.
+
+### Method 2: Manual Extraction
+
+If the automated method doesn't work:
+
+```bash
+npx playwright codegen \
+  --save-storage=storage_state.json \
+  https://notebooklm.google.com/
+```
+
+A Chromium window opens. Log in with your Google account and navigate to NotebookLM. Once you see your notebooks, close the browser. Playwright writes your session cookies to `storage_state.json`.
+
+Then set the environment variable:
+
+```bash
+export NOTEBOOKLM_STORAGE_PATH=./storage_state.json
+```
+
+---
+
 ## Overview
 
 Every request to NotebookLM requires three things:
 
 | Credential | Source | Used for |
-|---|---|---|
-| Session cookies (e.g. `SID`, `HSID`, `SSID`) | Playwright `storage_state.json` | Identifying the Google session |
+| Session cookies (e.g. `SID`, `__Secure-1PSID`, `__Secure-3PSID`, `HSID`, `SSID`) | Playwright `storage_state.json` | Identifying the Google session |
 | CSRF token (`SNlM0e`) | NotebookLM homepage HTML | Signing RPC request bodies |
 | Session ID (`FdrFJe`) | NotebookLM homepage HTML | Appended to RPC URL query params |
 
@@ -22,14 +53,33 @@ Cookies are loaded once from disk (or an environment variable). The CSRF token a
 
 The only supported method for obtaining valid credentials is a live browser session captured with [Playwright](https://playwright.dev/).
 
-### Step 1 — Install Playwright
+### Automated Method (Recommended)
+
+**Step 1:** Install dependencies
+
+```bash
+npm install --save-dev playwright @types/playwright
+npx playwright install chromium
+```
+
+**Step 2:** Run the extractor
+
+```bash
+npm run auth:extract
+```
+
+**Step 3:** Credentials are saved automatically to `.notebooklm-auth/`
+
+### Manual Method
+
+**Step 1:** Install Playwright
 
 ```bash
 npm install -D playwright
 npx playwright install chromium
 ```
 
-### Step 2 — Open NotebookLM and log in
+**Step 2:** Open NotebookLM and log in
 
 ```bash
 npx playwright codegen \
@@ -39,7 +89,7 @@ npx playwright codegen \
 
 A Chromium window opens. Log in with your Google account and navigate to NotebookLM. Once you see your notebooks, close the browser. Playwright writes your session cookies to `storage_state.json`.
 
-### Step 3 — Verify the file
+**Step 3:** Verify the file
 
 The file should look like this (abbreviated):
 
@@ -146,7 +196,7 @@ When the same cookie name appears under both `.google.com` and a regional domain
 
 ### Required cookies
 
-At minimum, `SID` must be present after filtering. If it is absent an `Error` is thrown immediately with instructions to re-authenticate.
+At minimum, one session cookie must be present after filtering. The loader accepts `SID`, `__Secure-1PSID`, or `__Secure-3PSID`. If none are present, an `Error` is thrown immediately with instructions to re-authenticate.
 
 ---
 
@@ -229,7 +279,7 @@ class AuthTokens {
 | Error | Cause | Fix |
 |---|---|---|
 | `Storage file not found: ~/.notebooklm/storage_state.json` | File does not exist at the default path | Run Playwright capture and place the file at the expected path, or set `NOTEBOOKLM_STORAGE_PATH` |
-| `Missing required cookies: SID` | The `SID` cookie is absent after domain filtering | Re-capture the session; ensure you are fully logged in before closing the Playwright window |
+| `Missing required session cookie` | None of `SID`, `__Secure-1PSID`, or `__Secure-3PSID` survived domain filtering | Re-capture the session; ensure you are fully logged in before closing the Playwright window |
 | `Authentication expired or invalid` | Session has expired on Google's side | Re-run `npx playwright codegen` to capture a fresh session |
 | `NOTEBOOKLM_AUTH_JSON is set but empty` | Env var is defined but blank | Ensure the variable contains valid JSON, not an empty string |
 | `Invalid storage state. The 'cookies' key is required.` | JSON is parseable but not a Playwright storage state | Verify the JSON structure contains a top-level `cookies` array |

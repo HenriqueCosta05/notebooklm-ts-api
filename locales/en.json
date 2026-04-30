@@ -71,6 +71,15 @@
     "configured": "Chat settings updated.",
     "mode_set": "Chat mode updated."
   },
+  "research": {
+    "started": "Research task started successfully.",
+    "status_fetched": "Research status retrieved.",
+    "results_imported": "Research results imported successfully.",
+    "completed": "Research task completed.",
+    "failed": "Research task failed.",
+    "in_progress": "Research task is in progress.",
+    "timeout": "Research task timed out after {{seconds}}s."
+  },
   "notes": {
     "not_found": "Note not found: {{id}}",
     "created": "Note created successfully.",

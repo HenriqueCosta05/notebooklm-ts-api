@@ -17,3 +17,5 @@ yarn.lock
 # TLS certificates — private keys must never be committed
 nginx/certs/
 RULES.md
+
+.notebooklm-auth

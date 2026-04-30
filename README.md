@@ -80,26 +80,44 @@ cp .env.example .env
 
 NotebookLM does not have a public API. Authentication is **cookie-based**: you must supply a valid Playwright `storage_state.json` containing a live Google session.
 
+
 ### Obtaining a storage state
 
-The recommended way to capture a session is with [Playwright](https://playwright.dev/):
+There are two ways to capture a valid Playwright `storage_state.json` for NotebookLM.
+
+- Manual (Playwright codegen):
 
 ```bash
 npx playwright codegen --save-storage=storage_state.json https://notebooklm.google.com/
 ```
 
-Log in to your Google account in the browser window that opens, navigate to NotebookLM, then close the browser. The file `storage_state.json` now contains your session cookies.
+Log in to your Google account in the browser window that opens, navigate to NotebookLM, then close the browser. The file `storage_state.json` will contain your session cookies.
+
+- Recommended (interactive extractor — no polling):
+
+This project includes a small Playwright-based extractor that avoids continuous polling. It will reuse an existing saved session if present; otherwise it opens a browser for you to complete the Google sign-in.
+
+```bash
+npm run auth:extract
+```
+
+If the extractor opens a browser, log in to your Google account and navigate to NotebookLM. Once NotebookLM is visible in the browser, return to the terminal and press ENTER — the extractor captures the Playwright storage state once and saves it.
+
+By default the extractor writes the captured state to `.notebooklm-auth/storage_state.json` in the project root. You can either move that file to a global location or point the server to the saved file using `NOTEBOOKLM_STORAGE_PATH` (see Option 1 below).
+
 
 ### Option 1 — Storage file
 
-Place `storage_state.json` in the default location or point to it via an environment variable:
+Place `storage_state.json` in the default location or point to it via an environment variable.
+
+The extractor saves to `.notebooklm-auth/storage_state.json` by default. You can either copy that file to a global location:
 
 ```bash
-# Default location (auto-detected)
+# Example global location
 mkdir -p ~/.notebooklm
-cp storage_state.json ~/.notebooklm/storage_state.json
+cp .notebooklm-auth/storage_state.json ~/.notebooklm/storage_state.json
 
-# Or set an explicit path
+# Or set an explicit path for the server
 NOTEBOOKLM_STORAGE_PATH=/path/to/storage_state.json
 ```
 

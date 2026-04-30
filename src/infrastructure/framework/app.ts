@@ -9,6 +9,8 @@ import { notebooksRouter } from "../../presentation/routes/notebooks.routes";
 import { sourcesRouter } from "../../presentation/routes/sources.routes";
 import { artifactsRouter } from "../../presentation/routes/artifacts.routes";
 import { chatRouter } from "../../presentation/routes/chat.routes";
+import { researchRouter } from "../../presentation/routes/research.routes";
+import { sharingRouter } from "../../presentation/routes/sharing.routes";
 import { t } from "../../i18n";
 
 export const createApp = (): express.Application => {
@@ -46,9 +48,11 @@ export const createApp = (): express.Application => {
   app.use(config.apiPrefix, notebookLMAuthMiddleware);
 
   app.use(`${config.apiPrefix}/notebooks`, notebooksRouter);
+  app.use(`${config.apiPrefix}/notebooks`, sharingRouter);
   app.use(`${config.apiPrefix}/notebooks/:notebookId/sources`, sourcesRouter);
   app.use(`${config.apiPrefix}/notebooks/:notebookId/artifacts`, artifactsRouter);
   app.use(`${config.apiPrefix}/notebooks/:notebookId/chat`, chatRouter);
+  app.use(`${config.apiPrefix}/notebooks`, researchRouter);
 
   app.use((_req, res) => {
     res.status(404).json({
