@@ -1,6 +1,6 @@
 {
   "name": "notebooklm-ts",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "An unofficial API alternative for notebook-lm py for Node.js developers.",
   "main": "index.js",
   "scripts": {
@@ -19,8 +19,7 @@
     "lint": "eslint 'src/**/*.ts' --fix --max-warnings 0",
     "lint:ts": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "prePush": "npm run test:coverage && npm run lint && npm run lint:ts && npm run build",
-    "auth:extract": "ts-node -r dotenv/config -r tsconfig-paths/register src/scripts/extract-auth.ts",
-    "docker:dropAll": "docker stop $(docker ps -a -q) && docker system prune -f"
+    "auth:extract": "ts-node -r dotenv/config -r tsconfig-paths/register src/scripts/extract-auth.ts"
   },
   "repository": {
     "type": "git",
