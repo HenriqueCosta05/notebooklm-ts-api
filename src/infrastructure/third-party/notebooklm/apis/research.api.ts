@@ -65,13 +65,22 @@ export class ResearchAPI {
     const rpcMethod =
       mode === "deep" ? RPCMethod.START_DEEP_RESEARCH : RPCMethod.START_FAST_RESEARCH;
 
-    const params = [notebookId, query];
+    // Structure params similar to source and artifact APIs
+    const params: unknown[] = [
+      query,           // [0] - research query
+      notebookId,      // [1] - notebook ID
+      null,            // [2] - placeholder
+      null,            // [3] - placeholder
+    ];
+
     const result = await this.core.rpcCall(rpcMethod, params, {
       sourcePath: `/notebook/${notebookId}`,
+      allowNull: true,
     });
 
-    if (!Array.isArray(result)) {
-      throw new Error(`Unexpected research response format: ${JSON.stringify(result)}`);
+    // Handle null result
+    if (!result || !Array.isArray(result)) {
+      throw new Error(`Failed to start research: API returned ${result === null ? "null" : "invalid data"}`);
     }
 
     return mapResearchStatus(result as unknown[]);
@@ -85,13 +94,19 @@ export class ResearchAPI {
    * @returns Current research status
    */
   async pollResearchStatus(notebookId: string, taskId: string): Promise<ResearchStatus> {
-    const params = [notebookId, taskId];
+    // Wrap taskId in arrays similar to other RPC calls
+    const params: unknown[] = [
+      notebookId,      // [0] - notebook ID
+      [[taskId]],      // [1] - task ID wrapped in arrays
+    ];
+
     const result = await this.core.rpcCall(RPCMethod.POLL_RESEARCH, params, {
       sourcePath: `/notebook/${notebookId}`,
+      allowNull: true,
     });
 
-    if (!Array.isArray(result)) {
-      throw new Error(`Unexpected research poll response: ${JSON.stringify(result)}`);
+    if (!result || !Array.isArray(result)) {
+      throw new Error(`Failed to poll research status: API returned ${result === null ? "null" : "invalid data"}`);
     }
 
     return mapResearchStatus(result as unknown[]);
@@ -108,16 +123,24 @@ export class ResearchAPI {
     notebookId: string,
     taskId: string
   ): Promise<Source[]> {
-    const params = [notebookId, taskId];
+    // Wrap taskId in arrays similar to other RPC calls
+    const params: unknown[] = [
+      notebookId,      // [0] - notebook ID
+      [[taskId]],      // [1] - task ID wrapped in arrays
+    ];
+
     const result = await this.core.rpcCall(RPCMethod.IMPORT_RESEARCH, params, {
       sourcePath: `/notebook/${notebookId}`,
       allowNull: true,
     });
 
-    if (!Array.isArray(result)) return [];
+    if (!result || !Array.isArray(result)) {
+      return [];
+    }
 
+    // Filter and map sources from the response
     return (result as unknown[][])
-      .filter((item) => Array.isArray(item))
+      .filter((item) => Array.isArray(item) && (item as unknown[]).length > 0)
       .map((item) => mapSourceFromResearch(item as unknown[], notebookId));
   }
 

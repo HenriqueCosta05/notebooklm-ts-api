@@ -161,27 +161,62 @@ const mapArtifactFromMindMap = (raw: unknown[]): Artifact | null => {
 };
 
 const parseGenerationResult = (result: unknown): GenerationStatus => {
-  if (Array.isArray(result) && (result as unknown[]).length > 0) {
-    const artifactData = (result as unknown[][])[0];
-    if (Array.isArray(artifactData) && artifactData.length > 0) {
-      const taskId = typeof artifactData[0] === "string" ? artifactData[0] : "";
-      const statusCode =
-        typeof artifactData[4] === "number" ? artifactData[4] : null;
-      const status =
-        statusCode !== null ? artifactStatusToStr(statusCode) : "pending";
+  // Null or empty result
+  if (!result) {
+    return buildGenerationStatus(
+      "",
+      "failed",
+      "Generation request returned no data from server",
+      null,
+    );
+  }
 
-      if (taskId) {
-        return buildGenerationStatus(taskId, status, null, null);
+  // Try to extract taskId from various possible response structures
+  let taskId = "";
+  let statusCode: number | null = null;
+
+  if (Array.isArray(result) && (result as unknown[]).length > 0) {
+    const firstElement = (result as unknown[])[0];
+
+    // Structure 1: [[taskId, status, ...], ...]
+    if (Array.isArray(firstElement) && (firstElement as unknown[]).length > 0) {
+      const artifactData = firstElement as unknown[];
+      
+      // Try to get taskId from first position
+      if (typeof artifactData[0] === "string" && artifactData[0].length > 0) {
+        taskId = artifactData[0];
+      }
+
+      // Try to get status from position 4 or 1
+      if (typeof artifactData[4] === "number") {
+        statusCode = artifactData[4];
+      } else if (typeof artifactData[1] === "number") {
+        statusCode = artifactData[1];
+      }
+    }
+    // Structure 2: [taskId, status, ...] (flat array)
+    else if (typeof firstElement === "string" && firstElement.length > 0) {
+      taskId = firstElement;
+      if (typeof (result as unknown[])[4] === "number") {
+        statusCode = (result as unknown[])[4] as number;
       }
     }
   }
 
-  return buildGenerationStatus(
-    "",
-    "failed",
-    "Generation failed - no artifact_id returned",
-    null,
-  );
+  // If we couldn't extract a taskId, return error
+  if (!taskId) {
+    return buildGenerationStatus(
+      "",
+      "failed",
+      "Generation failed - server did not return a task ID. Response structure may have changed.",
+      null,
+    );
+  }
+
+  const status =
+    statusCode !== null ? artifactStatusToStr(statusCode) : "pending";
+
+  return buildGenerationStatus(taskId, status, null, null);
 };
 
 const buildGenerationStatus = (
